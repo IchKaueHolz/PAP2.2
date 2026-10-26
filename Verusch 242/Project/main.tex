@@ -1,0 +1,504 @@
+\documentclass[12pt,a4paper,titlepage]{scrartcl}
+
+\usepackage{comment}
+\usepackage[main=ngerman,english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=3cm,head=29pt,foot=25pt}
+\setlength{\footheight}{25pt}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,mathtools}
+\numberwithin{equation}{section}
+\numberwithin{table}{section}
+\numberwithin{figure}{section}
+\usepackage{siunitx}
+\sisetup{locale=US, separate-uncertainty=true, per-mode=fraction}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[automark]{scrlayer-scrpage}
+\usepackage[most]{tcolorbox}
+\usepackage{hyperref}
+\usepackage{pdfpages}
+\usepackage{csvsimple-l3}
+\usepackage{longtable}
+
+\input{../../jupyterpackages.tex}
+
+
+\newcommand{\pdfabbildung}[2]{%
+    \refstepcounter{figure}%
+    \addcontentsline{lof}{figure}{\protect\numberline{\thefigure}#1}%
+    \label{#2}%
+}
+
+\newcommand{\pdftabelle}[2]{%
+    \refstepcounter{table}%
+    \addcontentsline{lot}{table}{\protect\numberline{\thetable}#1}%
+    \label{#2}%
+}
+
+\hypersetup{colorlinks=true, linkcolor=blue!60!black, urlcolor=blue!60!black, citecolor=blue!60!black}
+
+\clearpairofpagestyles
+
+\chead{%
+    \versuch\hfill\autor\\
+    \rule{\textwidth}{0.2pt}%
+}
+\cfoot{%
+    \rule{\textwidth}{0.2pt}\\[-0.5ex]
+    \pagemark\ 
+}
+\addtokomafont{pagefoot}{\small}
+\setlength{\parindent}{0pt}
+
+\newtcolorbox{resultbox}[1][]{ 
+    enhanced,
+    colback=black!4!white,
+    colframe=black!65!black,
+    boxrule=0.8pt,
+    arc=0.0mm,
+    title=#1,
+    fonttitle=\bfseries,
+}
+
+\newcommand{\versuch}{Versuch 242}
+\newcommand{\titel}{Spannungsverstärkung mit dem Operationsverstärker}
+\newcommand{\praktikum}{Physikalisches Anfängerpraktikum 2.2}
+\newcommand{\autor}{Jonathan Gießen}
+\newcommand{\partner}{Sinan Uysal}
+\newcommand{\gruppe}{Gruppe 2}
+\newcommand{\datum}{21. Oktober 2026}
+\newcommand{\betreuer}{Alicia Schneider}
+
+\begin{document}
+
+\pagestyle{scrheadings}
+
+\begin{titlepage}
+    \centering
+    \vspace*{4cm}
+    {\large Universität Heidelberg\par}
+    {\small Fakultät für Physik und Astronomie\par}
+    {\Large \praktikum\par}
+    \vspace{0.8cm}
+    {\LARGE \bfseries \versuch\ -- \titel\par}
+    \vspace{1.5cm}
+
+    \begin{tabular}{ll}
+        \textbf{Autor:} & \autor\\
+        \textbf{Partner:} & \partner\\
+        \textbf{Gruppe:} & \gruppe\\
+        \textbf{Betreuer:} & \betreuer\\
+        \textbf{Versuchsdatum:} & \datum\\
+    \end{tabular}
+
+    \vfill
+    \hrulefill\
+\end{titlepage}
+
+\tableofcontents
+
+\bigskip
+\begin{tcolorbox}[colback=gray!5,colframe=gray!60,boxrule=0.8pt,arc=0.01mm,title=KI-Hinweis]
+    Für die sprachliche Formulierung dieses Protokolls wurde bei Einleitung \ref{sec:Einleitung} und Grundlagen \ref{sec:Grundlagen}
+    KI-gestützte Textgenerierung und Hilfestellung verwendet. Auch für die \texttt{Python}-Syntax wurde manchmal die KI gefragt (wegen verzweifeln)
+\end{tcolorbox}
+
+\clearpage
+
+% ==============================================================================
+% 1. EINLEITUNG
+% ==============================================================================
+\section{Einleitung}\label{sec:Einleitung}
+
+In der naturwissenschaftlichen Messtechnik liegen elektrische Signale -- etwa von Photodioden, Teilchendetektoren, Thermoelementen oder biomedizinischen Elektroden -- häufig als sehr kleine Gleichspannungen, Wechselspannungen oder kurze Spannungsimpulse vor. Um diese Signale quantitativ erfassen, weiterverarbeiten und gegenüber äußeren Störeinflüssen (wie Netzbrummen oder hochfrequenten Einstrahlungen) abgrenzen zu können, müssen sie definiert verstärkt und gefiltert werden.
+
+Als universeller Grundbaustein moderner Verstärkerschaltungen dient der Operationsverstärker (OpAmp). Während ein einzelner integrierter Operationsverstärker intern aus zahlreichen Transistoren, Widerständen und Kapazitäten besteht, lässt sich sein Verhalten in einer Schaltung durch wenige charakteristische Kenngrößen beschreiben. Insbesondere durch das Prinzip der \emph{Gegenkopplung} (negative Rückkopplung eines Teils der Ausgangsspannung auf den invertierenden Eingang) kann die extrem hohe, aber stark bauteil-, temperatur- und frequenzabhängige Leerlaufverstärkung des Operationsverstärkers auf eine präzise einstellbare, nahezu ausschließlich durch externe passive Bauelemente bestimmte \emph{Betriebsverstärkung} $V'$ reduziert werden. Gleichzeitig bewirkt die Gegenkopplung eine Aufweitung des nutzbaren Frequenzbandes (Linearisierung des Frequenzgangs).
+
+Ziel des vorliegenden Versuchs~242 ist es, am Beispiel des klassischen Operationsverstärkers $\mu\text{A}741$ in invertierender Grundschaltung
+\begin{enumerate}
+    \item die Verstärkung von Gleich- und Wechselspannungen bei verschiedenen Rückkopplungswiderständen $R_g$ zu bestimmen und mit den theoretischen Erwartungswerten zu vergleichen (Aufgabe~1),
+    \item den Frequenzgang $V'(f)$ zwischen $\SI{100}{\hertz}$ und $\SI{300}{\kilo\hertz}$ sowohl für rein ohmsche Gegenkopplungen als auch für aktive Tiefpass- und Bandpassbeschaltungen aufzunehmen (Aufgabe~2) und
+    \item die Auswirkungen der verschiedenen Frequenzgänge und Filtercharakteristiken auf die Übertragung und Pulsform eines $\SI{1}{\kilo\hertz}$-Rechtecksignals im Zeitbereich zu untersuchen (Aufgabe~3).
+\end{enumerate}
+
+% ==============================================================================
+% 2. GRUNDLAGEN UND THEORIE
+% ==============================================================================
+\section{Grundlagen und Theorie}\label{sec:Grundlagen}
+
+\subsection{Kenngrößen des Operationsverstärkers}
+
+Ein Operationsverstärker ist ein Differenzverstärker, der die Spannungsdifferenz $U_e = U_+ - U_-$ zwischen seinem nicht-invertierenden Eingang ($+$) und seinem invertierenden Eingang ($-$) verstärkt. In der im Versuch untersuchten \emph{invertierenden Grundschaltung} liegt der nicht-invertierende Eingang auf Masse ($\text{GND}$), während das Eingangssignal über eine Vorbeschaltung auf den invertierenden Eingang gegeben wird \cite{PAPskript}.
+
+Ein Operationsverstärker wird im Wesentlichen durch drei Größen charakterisiert:
+\begin{itemize}
+    \item \textbf{Eingangswiderstand $R_i = U_e / I_e$:} Damit die Signalquelle durch den Verstärkereingang möglichst nicht belastet wird, sollte $R_i$ möglichst groß sein (beim idealen OpAmp $R_i \to \infty$; beim realen $\mu\text{A}741$ typischerweise $R_i \approx \SI{1e6}{\ohm}$ bis $\SI{2e6}{\ohm}$).
+    \item \textbf{Ausgangswiderstand $R_a = U_a / I_a$:} Damit die Ausgangsspannung $U_a$ unabhängig von einer angeschlossenen Last bleibt, muss $R_a$ möglichst klein sein (ideal $R_a \to 0$; beim $\mu\text{A}741$ ca. $R_a \approx \SI{50}{\ohm}$ bis $\SI{75}{\ohm}$).
+    \item \textbf{Leerlaufverstärkung $V_o = -U_a / U_e$:} Ohne äußere Rückkopplung besitzt der $\mu\text{A}741$ bei niedrigen Frequenzen ($f \lesssim \SI{10}{\hertz}$) eine sehr hohe Leerlaufverstärkung von $V_o \approx 10^5$ ($\SI{100}{\deci\bel}$). Oberhalb der internen Knickfrequenz von ca. $\SI{10}{\hertz}$ fällt $V_o(f)$ aufgrund der internen Frequenzkompensation umgekehrt proportional zur Frequenz ($V_o(f) \propto 1/f$, entsprechend $\SI{-20}{\deci\bel}$ pro Dekade) ab, bis bei der Transitfrequenz $f_T \approx \SI{0.5}{\mega\hertz}$ bis $\SI{1}{\mega\hertz}$ die Verstärkung $V_o = 1$ ($\SI{0}{\deci\bel}$) erreicht wird.
+\end{itemize}
+
+\subsection{Spannungsverstärkung des gegengekoppelten invertierenden Verstärkers}
+
+Da die Leerlaufverstärkung $V_o$ stark von Exemplarstreuungen, Betriebsspannung und Temperatur abhängt, wird beim gegengekoppelten invertierenden Verstärker ein Teil der um $\SI{180}{\degree}$ phasenverschobenen Ausgangsspannung $U_a$ über einen Rückkopplungswiderstand $R_g$ auf den invertierenden Eingang zurückgeführt, dem das Eingangssignal $U_1$ über den Eingangswiderstand $R_e$ zugeführt wird.
+
+Für die am invertierenden Eingangsknoten zusammenfließenden Ströme gilt nach der Kirchhoffschen Knotenregel \cite{PAPskript}:
+\begin{equation}
+    I_1 + I_2 - I_e = 0 \,.
+    \label{eq:knotenregel}
+\end{equation}
+Da die Beschaltungswiderstände $R_e$ und $R_g$ um Größenordnungen kleiner als der Inneneingangswiderstand $R_i \approx \SI{1e6}{\ohm}$ des Operationsverstärkers sind, ist der in den Verstärkereingang fließende Strom $I_e \approx 0$ gegenüber den Zweigströmen $I_1$ und $I_2$ vernachlässigbar. Mit dem Ohmschen Gesetz folgt aus Gleichung~\eqref{eq:knotenregel}:
+\begin{equation}
+    I_1 + I_2 = \frac{U_1 - U_e}{R_e} + \frac{U_a - U_e}{R_g} = 0 \,.
+    \label{eq:strombilanz}
+\end{equation}
+Ersetzt man die Differenzspannung am Verstärkereingang über die Definition der Leerlaufverstärkung durch $U_e = -U_a / V_o$, so ergibt sich nach Umstellen \cite{PAPskript}:
+\begin{equation}
+    \frac{U_1}{U_a} = -\left[\frac{1}{V_o} + \frac{R_e}{R_g}\left(1 + \frac{1}{V_o}\right)\right] \,.
+    \label{eq:allg_verstaerkung}
+\end{equation}
+Bei hinreichend niedrigen Frequenzen gilt $V_o \approx 10^5 \gg 1$, also $1/V_o \approx 10^{-5} \ll 1$ (der invertierende Eingang liegt näherungsweise auf $U_e \approx 0$, sogenannte \emph{virtuelle Masse}). Ist zudem das Widerstandsverhältnis $R_e / R_g$ groß gegenüber $1/V_o$, so vereinfacht sich Gleichung~\eqref{eq:allg_verstaerkung} zur idealen \emph{Betriebsverstärkung} $V'$:
+\begin{equation}
+    V' \coloneqq -\frac{U_a}{U_1} = \frac{R_g}{R_e} \,.
+    \label{eq:betriebsverstaerkung}
+\end{equation}
+Im Gültigkeitsbereich dieser Näherung hängt $V'$ ausschließlich vom Verhältnis der externen Widerstände $R_g$ und $R_e$ ab. Das negative Vorzeichen in $-\frac{U_a}{U_1}$ beschreibt die Phasenverschiebung um $\SI{180}{\degree}$ (Invertierung). Bei Wechselspannungsmessungen von Effektivwerten wird unter $V'$ der Betrag
+\begin{equation}
+    V' = \left|\frac{U_a}{U_1}\right| = \frac{U_{a,\text{eff}}}{U_{1,\text{eff}}}
+    \label{eq:betriebsverstaerkung_ac}
+\end{equation}
+verstanden.
+
+\subsection{Frequenzgang und Verstärkungs-Bandbreite-Produkt (GBWP)}
+
+Mit wachsender Frequenz $f$ nimmt die Leerlaufverstärkung gemäß $V_o(f) \approx -\mathrm{i}\, f_T / f$ ab, sodass die Bedingung $R_e / R_g \gg 1/|V_o(f)|$ ab einer oberen Grenzfrequenz $f_g$ verletzt wird. Aus Gleichung~\eqref{eq:allg_verstaerkung} folgt für den Betrag der frequenzabhängigen Betriebsverstärkung eines Tiefpasses erster Ordnung:
+\begin{equation}
+    V'(f) = \frac{V'_0}{\sqrt{1 + \left(\frac{f}{f_g}\right)^2}} \,,
+    \label{eq:tiefpass_allg}
+\end{equation}
+wobei $V'_0 = V'(f \to 0)$ die Plateauverstärkung bei tiefen Frequenzen und $f_g$ die obere $\SI{-3}{\deci\bel}$-Grenzfrequenz bezeichnet, bei der die Verstärkung auf
+\begin{equation}
+    V'(f_g) = \frac{V'_0}{\sqrt{2}} \approx 0{,}707\, V'_0
+\end{equation}
+abgefallen ist. Für $f \gg f_g$ mündet die Betriebsverstärkung asymptotisch in die Leerlaufverstärkungskurve $V_o(f) \approx f_T / f$ des Operationsverstärkers ein. Daraus resultiert ein konstantes \emph{Verstärkungs-Bandbreite-Produkt} (Gain-Bandwidth Product, GBWP):
+\begin{equation}
+    \text{GBWP} = V'_0 \cdot f_g \approx f_T = \text{const.}
+    \label{eq:gbwp}
+\end{equation}
+Eine stärkere Gegenkopplung (kleineres $R_g$) verringert zwar die Verstärkung $V'_0$, erhöht aber im gleichen Maße die Bandbreite $f_g$.
+
+\subsection{Aktive Filterbeschaltungen}
+
+Werden im Eingangs- oder Rückkopplungszweig zusätzlich Kondensatoren eingesetzt, treten an die Stelle der reellen Widerstände $R_e$ und $R_g$ die komplexen Impedanzen $Z_e(\omega)$ und $Z_g(\omega)$ mit $\omega = 2\pi f$:
+\begin{equation}
+    V'(f) = \left|\frac{Z_g(\omega)}{Z_e(\omega)}\right| \,.
+\end{equation}
+
+\paragraph{Aktiver Tiefpass ($R_g \parallel C_g$):}
+Wird dem Rückkopplungswiderstand $R_g$ ein Kondensator $C_g$ parallel geschaltet, so lautet die Gesamtimpedanz im Gegenkopplungszweig:
+\begin{equation}
+    Z_g(\omega) = \left(\frac{1}{R_g} + \mathrm{i}\omega C_g\right)^{-1} = \frac{R_g}{1 + \mathrm{i}\omega R_g C_g} \,.
+\end{equation}
+Hohe Frequenzen werden durch die sinkende Impedanz $(\omega C_g)^{-1}$ des Kondensators stärker gegengekoppelt als tiefe Frequenzen. Der Betrag der Betriebsverstärkung folgt Gleichung~\eqref{eq:tiefpass_allg} mit der durch die RC-Zeitkonstante $\tau_{\text{TP}} = R_g C_g$ festgelegten theoretischen Grenzfrequenz:
+\begin{equation}
+    f_{g,\text{TP}} = \frac{1}{2\pi R_g C_g} \,.
+    \label{eq:fg_tp}
+\end{equation}
+
+\paragraph{Aktiver Bandpass (Eingangshochpass $C_{\text{HP}}$ in Reihe zu $R_e$ und Gegenkopplung $R_g \parallel C_g$):}
+Wird zusätzlich vor den Eingangswiderstand $R_e$ ein Reihenkondensator $C_{\text{HP}}$ geschaltet, so beträgt die Eingangsimpedanz
+\begin{equation}
+    Z_e(\omega) = R_e + \frac{1}{\mathrm{i}\omega C_{\text{HP}}} = R_e \left(1 - \mathrm{i}\frac{f_{g,\text{HP}}}{f}\right) \quad \text{mit} \quad f_{g,\text{HP}} = \frac{1}{2\pi R_e C_{\text{HP}}} \,.
+    \label{eq:fg_hp}
+\end{equation}
+Für tiefe Frequenzen ($f \ll f_{g,\text{HP}}$) blockiert der Kondensator das Eingangssignal. In Kombination mit dem aktiven Tiefpass im Rückkopplungszweig ergibt sich ein aktiver Bandpass mit der Übertragungsfunktion:
+\begin{equation}
+    V'_{\text{BP}}(f) = \frac{V'_0}{\sqrt{1 + \left(\frac{f_{g,\text{HP}}}{f}\right)^2}\,\sqrt{1 + \left(\frac{f}{f_{g,\text{TP}}}\right)^2}} \,.
+    \label{eq:bandpass}
+\end{equation}
+Das Maximum der Verstärkung liegt bei der geometrischen Mittenfrequenz $f_{\text{max}} = \sqrt{f_{g,\text{HP}} \cdot f_{g,\text{TP}}}$.
+
+\subsection{Impulsverstärkung und Fourier-Spektrum eines Rechtecksignals}
+
+Ein symmetrisches, mittelwertfreies Rechtecksignal der Amplitude $U_0$ und der Grundfrequenz $f_0 = 1/T$ lässt sich als Fourier-Reihe aus ungeradzahligen harmonischen Sinuswellen darstellen \cite{ilberg1988physikalisches}:
+\begin{equation}
+    U_{\text{Rechteck}}(t) = \frac{4 U_0}{\pi} \sum_{k=1}^{\infty} \frac{\sin\!\big((2k-1)\,2\pi f_0\, t\big)}{2k-1} \,.
+    \label{eq:fourier_rechteck}
+\end{equation}
+Für eine formgetreue Übertragung eines Rechteckimpulses muss der Verstärker sowohl die Grundfrequenz $f_0$ als auch eine Vielzahl höherer Oberwellen $(2k-1)f_0$ mit konstanter Verstärkung und linearer Phase verstärken:
+\begin{itemize}
+    \item \textbf{Hohe Frequenzanteile ($f \gg f_0$):} Sie sind für die steilen Schaltflanken (kurze Anstiegs- und Abfallzeiten) sowie die scharfen Ecken beim Pegelwechsel verantwortlich. Werden hohe Frequenzen durch Tiefpasswirkung ($f_g$ klein bzw. Parallelkondensator $C_g$) unterdrückt, wirkt die Schaltung für schnelle Änderungen integrierend: Die Flanken steigen bzw. fallen exponentiell mit der Zeitkonstante $\tau_{\text{TP}} = 1/(2\pi f_g)$ an, und die Ecken des Rechtecks werden abgerundet (\emph{Verschleifung}).
+    \item \textbf{Tiefe Frequenzanteile ($f \lesssim f_0$):} Sie bestimmen das konstante Spannungsplateau (das flache Impulsdach während der Halbwertszeit $T/2$). Werden tiefe Frequenzen durch einen Eingangshochpass ($C_{\text{HP}}$) gedämpft, wirkt die Schaltung differenzierend: Unmittelbar nach dem steilen Flankensprung fällt die Ausgangsspannung mit der Zeitkonstante $\tau_{\text{HP}} = R_e C_{\text{HP}}$ exponentiell gemäß $U_a(t) \propto \mathrm{e}^{-t/\tau_{\text{HP}}}$ gegen Null ab (\emph{Dachschräge} bzw. Differenzierpeaks).
+\end{itemize}
+
+\subsection{Literaturwerte und Bauteilparameter}
+
+Gemäß den Schaltbildern der Versuchsanleitung (Abbildungen~5 und~6 in \cite{PAPskript}) besitzt der Eingangswiderstand vor dem invertierenden Eingang des $\mu\text{A}741$ sowohl in der Gleich- als auch in der Wechselspannungsschaltung den Nennwert
+\begin{equation*}
+    R_e = \SI{3.0 +- 0.3}{\kilo\ohm} \,,
+\end{equation*}
+wobei alle Widerstände laut Anleitung eine Fertigungstoleranz von $\pm\SI{10}{\percent}$ aufweisen. Für Wechselspannungsmessungen ist dem Verstärkereingang ein nomineller $1{:}10$-Spannungsteiler aus $R_{T1} = \SI{200}{\ohm}$ und $R_{T2} = \SI{22}{\ohm}$ vorgeschaltet (exaktes Teilerverhältnis $\frac{22}{200+22} = \frac{1}{10{,}09} \approx \frac{1}{10}$), gefolgt von einem Koppelkondensator $C_{\text{Koppel}} = \SI{22}{\micro\farad}$ (Schalter S1 in Stellung~2) bzw. einem Hochpasskondensator $C_{\text{HP}} = \SI{47}{\nano\farad}$ (Schalter S1 in Stellung~3).
+
+Aus Gaußscher Fehlerfortpflanzung folgt für die relative Unsicherheit der theoretischen Betriebsverstärkung $V'_{\text{th}} = R_g / R_e$ bei je $\SI{10}{\percent}$ Widerstandstoleranz:
+\begin{equation}
+    \frac{\Delta V'_{\text{th}}}{V'_{\text{th}}} = \sqrt{\left(\frac{\Delta R_g}{R_g}\right)^2 + \left(\frac{\Delta R_e}{R_e}\right)^2} = \sqrt{0{,}10^2 + 0{,}10^2} = \sqrt{2}\cdot \SI{10}{\percent} \approx \SI{14.14}{\percent} \,.
+    \label{eq:fehler_vth}
+\end{equation}
+Analog gilt für die theoretischen RC-Grenzfrequenzen $f_g = (2\pi R C)^{-1}$ unter Annahme einer Kapazitätstoleranz von $\pm\SI{10}{\percent}$ ebenfalls eine relative Unsicherheit von $\approx \SI{14.14}{\percent}$. Tabelle~\ref{tab:literaturwerte} fasst alle Bauteil- und Theoriewerte zusammen.
+
+\begin{table}[H]
+    \centering
+    \caption{Nominelle Bauteilwerte der Versuchsschaltung mit $\pm\SI{10}{\percent}$ Toleranz sowie daraus berechnete theoretische Betriebsverstärkungen $V'_{\text{th}} = R_g / R_e$ und Grenzfrequenzen $f_{g,\text{th}}$ \cite{PAPskript}.}
+    \label{tab:literaturwerte}
+    \small
+    \setlength{\tabcolsep}{5pt}
+    \begin{tabular}{llcc}
+        \toprule
+        \textbf{Schalter} & \textbf{Beschaltung} & \textbf{Theoriewert $V'_{\text{th}}$} & \textbf{Grenzfrequenz $f_{g,\text{th}}$} \\
+        \midrule
+        Eingang & $R_e = \SI{3.0 +- 0.3}{\kilo\ohm}$ & -- & -- \\
+        S2 = 1 & $R_{g,1} = \SI{680 +- 68}{\kilo\ohm}$ & $\num{226.7 +- 32.1}$ & $\approx \SI{2.5}{\kilo\hertz}$ (aus GBWP) \\
+        S2 = 2 & $R_{g,2} = \SI{274 +- 27.4}{\kilo\ohm}$ & $\num{91.3 +- 12.9}$ & $\approx \SI{6.5}{\kilo\hertz}$ (aus GBWP) \\
+        S2 = 3 & $R_{g,3} = \SI{48.7 +- 4.9}{\kilo\ohm}$ & $\num{16.23 +- 2.30}$ & $\approx \SI{35}{\kilo\hertz}$ (aus GBWP) \\
+        S2 = 4 (TP) & $R_{g,3} \parallel C_g$ ($C_g = \SI{560}{\pico\farad}$) & $\num{16.23 +- 2.30}$ & $\SI{5.84 +- 0.83}{\kilo\hertz}$ \\
+        S1 = 3 (HP) & $R_e + C_{\text{HP}}$ ($C_{\text{HP}} = \SI{47}{\nano\farad}$) & -- & $\SI{1.13 +- 0.16}{\kilo\hertz}$ \\
+        S1 = 2 (AC) & $R_e + C_{\text{Koppel}}$ ($C_{\text{Koppel}} = \SI{22}{\micro\farad}$) & -- & $\SI{2.41 +- 0.34}{\hertz}$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% ==============================================================================
+% 3. MESSPROTOKOLL
+% ==============================================================================
+\section{Messprotokoll}\label{sec:Messprotokoll}
+
+\subsection{Versuchsaufbau und Durchführung}
+
+Der verwendete Messaufbau (vgl. Abbildung~\ref{fig:messaufbau}) besteht aus dem vorverdrahteten Schaltkasten mit dem Operationsverstärker $\mu\text{A}741$ ($\pm\SI{15}{\volt}$ Spannungsversorgung), einem PeakTech-Funktionsgenerator sowie einem digitalen Zweikanal-Oszilloskop (Tektronix TDS1072). Kanal~1 des Oszilloskops erfasst das Eingangssignal ($U_1$ bei Gleichspannung bzw. $U_G = 10\,U_1$ vor dem $1{:}10$-Teiler bei Wechselspannung), während Kanal~2 die Ausgangsspannung $U_a$ des Operationsverstärkers misst.
+
+\begin{enumerate}
+    \item \textbf{Aufgabe 1 (Gleich- und Wechselspannungsverstärker):}
+    \begin{itemize}
+        \item \emph{Gleichspannung (DC):} Mit Schalter S1 in Stellung~1 und Oszilloskop-Kanalkopplung auf \texttt{DC} wurden über das Zehngangpotentiometer elf Eingangsgleichspannungen $U_1$ im Bereich von $\SI{-250}{\milli\volt}$ bis $\SI{+250}{\milli\volt}$ in Schritten von $\SI{50}{\milli\volt}$ eingestellt. Für die beiden Gegenkopplungswiderstände $R_g = \SI{48.7}{\kilo\ohm}$ (Tabelle~\ref{tab:mess_a1_487}) und $R_g = \SI{274}{\kilo\ohm}$ (Tabelle~\ref{tab:mess_a1_274}) wurde jeweils die zugehörige Ausgangsgleichspannung $U_a$ gemessen.
+        \item \emph{Wechselspannung (AC):} Mit Schalter S1 in Stellung~2 und Oszilloskop-Kopplung auf \texttt{AC} wurde am Funktionsgenerator eine Sinusspannung der Frequenz $f = \SI{1}{\kilo\hertz}$ mit sieben Spitze-Spitze-Amplituden $U_{ss}$ zwischen $\SI{50}{\milli\volt_{ss}}$ und $\SI{1000}{\milli\volt_{ss}}$ angelegt. Für $R_g = \SI{274}{\kilo\ohm}$ (Tabelle~\ref{tab:mess_a1_ac274}) und $R_g = \SI{680}{\kilo\ohm}$ (Tabelle~\ref{tab:mess_a1_ac680}) wurden die Effektivwerte $U_G = 10\,U_{1,\text{eff}}$ (Kanal~1) und $U_{a,\text{eff}}$ (Kanal~2) aufgezeichnet.
+    \end{itemize}
+    \item \textbf{Aufgabe 2 (Frequenzgang verschiedener Verstärkerkonstellationen):}
+    Zwischen $f = \SI{100}{\hertz}$ und $\SI{300}{\kilo\hertz}$ (je drei Frequenzen pro Dekade: $1, 3, 6 \times 10^n\,\si{\hertz}$) wurde der Effektivwert der Ausgangsspannung $U_{a,\text{eff}}$ für vier Konfigurationen gemessen: $R_g = \SI{680}{\kilo\ohm}$ und $R_g = \SI{274}{\kilo\ohm}$ bei $U_g = \SI{0.3}{\volt_{ss}}$ sowie $R_g = \SI{48.7}{\kilo\ohm}$ und die Parallelschaltung $R_g = \SI{48.7}{\kilo\ohm} \parallel C_g = \SI{560}{\pico\farad}$ (S1 auf~2, S2 auf~4) bei $U_g = \SI{1.0}{\volt_{ss}}$. Anschließend wurde für den aktiven Bandpass mit vorgeschaltetem Eingangshochpass $C_{\text{HP}} = \SI{47}{\nano\farad}$ (S1 auf~3, S2 auf~4, $U_g = \SI{1.0}{\volt_{ss}}$) der Frequenzbereich von $\SI{300}{\hertz}$ bis $\SI{20}{\kilo\hertz}$ vermessen (Abbildungen~\ref{fig:mess_a2_plot} und~\ref{fig:mess_a2_code}).
+    \item \textbf{Aufgabe 3 (Impulsverstärkung):}
+    Am Funktionsgenerator wurde ein Rechtecksignal der Frequenz $f_0 = \SI{1}{\kilo\hertz}$ eingestellt ($U_g = \SI{0.3}{\volt_{ss}}$ für S2 in Stellung~1 und~2; $U_g = \SI{1.0}{\volt_{ss}}$ für S2 in Stellung~3 und~4). Für alle vier Gegenkopplungseinstellungen (S2 = $1, 2, 3, 4$) wurde jeweils zwischen normalem Wechselspannungseingang (S1 = 2) und Eingangshochpass (S1 = 3) umgeschaltet und die Signale abfotografiert. (Abbildungen~\ref{fig:osz_3_4} bis~\ref{fig:osz_3_11}).
+\end{enumerate}
+
+% Registrierung der im Messprotokoll enthaltenen Abbildungen und Tabellen für LOF/LOT
+\pdfabbildung{Messaufbau des Versuchs 242 mit Operationsverstärker $\mu$A741 (1), Signalgenerator (2) und Oszilloskop (3) (Messprotokoll S.~1).}{fig:messaufbau}
+\pdftabelle{Messwerte zu Aufgabe 1: Gleichspannungsverstärker bei $R_g = \SI{48.7}{\kilo\ohm}$ (Messprotokoll S.~1).}{tab:mess_a1_487}
+\pdftabelle{Messwerte zu Aufgabe 1: Gleichspannungsverstärker bei $R_g = \SI{274}{\kilo\ohm}$ (Messprotokoll S.~2).}{tab:mess_a1_274}
+\pdftabelle{Messwerte zu Aufgabe 1: Wechselspannungsverstärker ($f = \SI{1}{\kilo\hertz}$) bei $R_g = \SI{274}{\kilo\ohm}$ (Messprotokoll S.~2).}{tab:mess_a1_ac274}
+\pdftabelle{Messwerte zu Aufgabe 1: Wechselspannungsverstärker ($f = \SI{1}{\kilo\hertz}$) bei $R_g = \SI{680}{\kilo\ohm}$ (Messprotokoll S.~2).}{tab:mess_a1_ac680}
+\pdfabbildung{Vorläufiger doppeltlogarithmischer Plot des Frequenzgangs zu Aufgabe 2 (Messprotokoll S.~3).}{fig:mess_a2_plot}
+\pdfabbildung{Dokumentation der Rohdaten-Arrays zu Aufgabe 2 in Python (Messprotokoll S.~3).}{fig:mess_a2_code}
+\pdfabbildung{Impulsverstärkung ($f = \SI{1}{\kilo\hertz}$, $U_g = \SI{0.3}{\volt_{ss}}$): Schalter S1 = 2, S2 = 1 ($R_g = \SI{680}{\kilo\ohm}$) (Messprotokoll S.~4).}{fig:osz_3_4}
+\pdfabbildung{Impulsverstärkung ($f = \SI{1}{\kilo\hertz}$, $U_g = \SI{0.3}{\volt_{ss}}$): Schalter S1 = 3 (Hochpass), S2 = 1 ($R_g = \SI{680}{\kilo\ohm}$) (Messprotokoll S.~4).}{fig:osz_3_5}
+\pdfabbildung{Impulsverstärkung ($f = \SI{1}{\kilo\hertz}$, $U_g = \SI{0.3}{\volt_{ss}}$): Schalter S1 = 2, S2 = 2 ($R_g = \SI{274}{\kilo\ohm}$) (Messprotokoll S.~4).}{fig:osz_3_6}
+\pdfabbildung{Impulsverstärkung ($f = \SI{1}{\kilo\hertz}$, $U_g = \SI{0.3}{\volt_{ss}}$): Schalter S1 = 3 (Hochpass), S2 = 2 ($R_g = \SI{274}{\kilo\ohm}$) (Messprotokoll S.~4).}{fig:osz_3_7}
+\pdfabbildung{Impulsverstärkung ($f = \SI{1}{\kilo\hertz}$, $U_g = \SI{1.0}{\volt_{ss}}$): Schalter S1 = 2, S2 = 3 ($R_g = \SI{48.7}{\kilo\ohm}$) (Messprotokoll S.~5).}{fig:osz_3_8}
+\pdfabbildung{Impulsverstärkung ($f = \SI{1}{\kilo\hertz}$, $U_g = \SI{1.0}{\volt_{ss}}$): Schalter S1 = 3 (Hochpass), S2 = 3 ($R_g = \SI{48.7}{\kilo\ohm}$) (Messprotokoll S.~5).}{fig:osz_3_9}
+\pdfabbildung{Impulsverstärkung ($f = \SI{1}{\kilo\hertz}$, $U_g = \SI{1.0}{\volt_{ss}}$): Schalter S1 = 2, S2 = 4 ($R_g = \SI{48.7}{\kilo\ohm} \parallel \SI{560}{\pico\farad}$) (Messprotokoll S.~5).}{fig:osz_3_10}
+\pdfabbildung{Impulsverstärkung ($f = \SI{1}{\kilo\hertz}$, $U_g = \SI{1.0}{\volt_{ss}}$): Schalter S1 = 3 (Hochpass), S2 = 4 ($R_g = \SI{48.7}{\kilo\ohm} \parallel \SI{560}{\pico\farad}$) (Messprotokoll S.~5).}{fig:osz_3_11}
+
+\includepdf[
+    pages=-,
+    width=\textwidth,
+    height=0.92\textheight,
+    keepaspectratio,
+    pagecommand={\thispagestyle{scrheadings}},
+]{../Messprotokoll 22.pdf}
+
+\clearpage
+
+
+\section{Auswertung}\label{sec:Auswertung}
+
+\subsection{Aufgabe I: Gleich- und Wechselspannungsverstärkung}\label{sec:Aufgabe1}
+
+\subsubsection{Auswertungsmethodik und Fehlerfortpflanzung}
+
+Zur Bestimmung der Betriebsverstärkung $V'$ wird für jede Verstärkerkonfiguration eine gewichtete lineare Regression der Form
+\begin{equation}
+    U_a(U_1) = m \cdot U_1 + U_{\text{off}}
+    \label{eq:lin_reg}
+\end{equation}
+an die Messwerte angepasst. Da sowohl die Eingangsspannung $U_1$ mit einer Messunsicherheit $\Delta U_1$ als auch die Ausgangsspannung $U_a$ mit $\Delta U_a$ behaftet ist, wird die Unsicherheit $\Delta U_1$ über Gaußsche Fehlerfortpflanzung in eine effektive Gesamtunsicherheit der abhängigen Größe umgerechnet:
+\begin{equation}
+    \sigma_{\text{eff}} = \sqrt{(\Delta U_a)^2 + (m \cdot \Delta U_1)^2} \,.
+    \label{eq:sigma_eff}
+\end{equation}
+
+Der Fehler ergibt sich aus der Covarianzmatrix der linearen Regression
+\begin{itemize}
+    \item \textbf{Gleichspannung (DC):} Die Mess Messunsicherheiten betragen $\Delta U_1 = \SI{1.0}{\milli\volt}$ und $\Delta U_a = \SI{0.10}{\volt}$. Wegen der Invertierung des Signals ($m < 0$) ergibt sich die Betriebsverstärkung zu $V'_{\text{DC}} = -m$ mit $\Delta V'_{\text{DC}} = \Delta m$. Der Achsenabschnitt $U_{\text{off}}$ beschreibt die Ausgangs-Offsetspannung bei $U_1 = \SI{0}{\volt}$.
+    \item \textbf{Wechselspannung (AC, $f = \SI{1}{\kilo\hertz}$):} In den Tabellen~\ref{tab:mess_a1_ac274} und~\ref{tab:mess_a1_ac680} wurde auf Kanal~1 der Effektivwert $U_G$ vor dem $1{:}10$-Spannungsteiler mit $\Delta U_G = \SI{3}{\milli\volt}$ gemessen. Für die am Verstärkereingang anliegende Effektivspannung gilt somit:
+    \begin{equation}
+        U_{1,\text{eff}} = \frac{U_G}{10} \,, \qquad \Delta U_{1,\text{eff}} = \frac{\Delta U_G}{10} = \SI{0.3}{\milli\volt} \,.
+    \end{equation}
+    Die Ausgangsspannung $U_{a,\text{eff}}$ wurde mit einer Unsicherheit von $\Delta U_{a,\text{eff}} = \SI{10}{\milli\volt}$ bestimmt. Die Steigung liefet $V'_{\text{AC}} = m$.
+\end{itemize}
+
+\subsubsection{Beobachtung der Übersteuerung Sättigung bei Gleichspannung}
+
+Bei der Gleichspannungsmessung mit $R_g = \SI{48.7}{\kilo\ohm}$ (Tabelle~\ref{tab:mess_a1_487}) lässt sich ein linearer Zusammenhang $U_a(U_1)$ über das gesamte Messintervall $U_1 \in [\SI{-250}{\milli\volt}, \SI{+250}{\milli\volt}]$ zwischen $U_a = \SI{+4.30}{\volt}$ und $U_a = \SI{-3.89}{\volt}$ erkennen.
+
+Bei der höheren Gegenkopplung $R_g = \SI{274}{\kilo\ohm}$ (Tabelle~\ref{tab:mess_a1_274}) zeigt sich hingegen an den Rändern des Messbereichs die erwartete Sättigung des Operationsverstärkers:
+\begin{itemize}
+    \item Für positive Eingangsspannungen $U_1 \in \{\SI{150}{\milli\volt}, \SI{200}{\milli\volt}, \SI{250}{\milli\volt}\}$ verharrt die Ausgangsspannung auf einem konstanten Sättigungsplateau von $U_{a,\text{sat}^-} = \SI{-12.70}{\volt}$ bis $\SI{-12.80}{\volt}$.
+    \item Für stark negative Eingangsspannungen $U_1 \in \{\SI{-200}{\milli\volt}, \SI{-250}{\milli\volt}\}$ sättigt die Ausgangsspannung bei $U_{a,\text{sat}^+} = \SI{+14.60}{\volt}$ bis $\SI{+14.70}{\volt}$.
+\end{itemize}
+Die physikalische Ursache hierfür ist die Betriebsspannung des $\mu\text{A}741$ von $U_{\text{CC}} = \pm\SI{15}{\volt}$: Der Operationsverstärker kann lediglich nur knapp unter die Betriebsspannung verstärken. 
+
+\subsubsection{Graphische Darstellung und Ergebnisse zu Aufgabe I}
+
+Abbildung~\ref{fig:aufgabe1_kennlinien} zeigt in Teil~(a) die Gleichspannungskennlinien $U_a(U_1)$ inklusive der Sättigungsbereiche und Residuen sowie in Teil~(b) die Wechselspannungskennlinien $U_{a,\text{eff}}(U_{1,\text{eff}})$ bei $f = \SI{1}{\kilo\hertz}$. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/aufgabe1_kennlinien.pdf}
+    \caption{Kennlinien der Spannungsverstärkung zu Aufgabe~I: (a) Gleichspannungsverstärker für $R_g = \SI{48.7}{\kilo\ohm}$ und $R_g = \SI{274}{\kilo\ohm}$; (b) Wechselspannungsverstärker bei $f = \SI{1}{\kilo\hertz}$ für $R_g = \SI{274}{\kilo\ohm}$ und $R_g = \SI{680}{\kilo\ohm}$.}
+    \label{fig:aufgabe1_kennlinien}
+\end{figure}
+
+
+Die aus den linearen Regressionen gewonnenen Betriebsverstärkungen $V'_{\text{mess}}$, die Offsetspannungen $U_{\text{off}}$ sowie der Vergleich mit den Theoriewerten $V'_{\text{th}} = R_g / R_e$ sind in Tabelle~\ref{tab:ergebnisse_a1} zusammengefasst. Die Sigma-Abweichung der Theorie und der Messwerte lässt sich mit 
+\begin{equation}
+    z = \frac{|V'_{\text{mess}} - V'_{\text{th}}|}{\sqrt{(\Delta V'_{\text{mess}})^2 + (\Delta V'_{\text{th}})^2}}
+\end{equation}
+berechnen.
+
+\begin{table}[H]
+    \centering
+    \caption{Ergebnisse der linearen Regressionen zu Aufgabe~I im Vergleich mit den theoretischen Betriebsverstärkungen $V'_{\text{th}} = R_g / R_e$ ($R_e = \SI{3.0 +- 0.3}{\kilo\ohm}$).}
+    \label{tab:ergebnisse_a1}
+    \begin{tabular}{llcccc}
+        \toprule
+        \textbf{Modus} & \textbf{$R_g$} & \textbf{Messwert $V'_{\text{mess}}$} & \textbf{Offset $U_{\text{off}}$} & \textbf{Theorie $V'_{\text{th}}$} & \textbf{Abw. $z$} \\
+        \midrule
+        DC & $\SI{48.7}{\kilo\ohm}$ & $\num{16.42 +- 0.19}$ & $\SI{0.207 +- 0.031}{\volt}$ & $\num{16.23 +- 2.30}$ & $\num{0.08}\,\sigma$ \\
+        DC & $\SI{274}{\kilo\ohm}$ & $\num{91.54 +- 0.65}$ & $\SI{-0.127 +- 0.058}{\volt}$ & $\num{91.33 +- 12.92}$ & $\num{0.02}\,\sigma$ \\
+        AC ($\SI{1}{\kilo\hertz}$) & $\SI{274}{\kilo\ohm}$ & $\num{89.32 +- 1.18}$ & $\SI{0.009 +- 0.021}{\volt}$ & $\num{91.33 +- 12.92}$ & $\num{0.16}\,\sigma$ \\
+        AC ($\SI{1}{\kilo\hertz}$) & $\SI{680}{\kilo\ohm}$ & $\num{216.38 +- 2.72}$ & $\SI{0.015 +- 0.047}{\volt}$ & $\num{226.67 +- 32.06}$ & $\num{0.32}\,\sigma$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{resultbox}[Ergebnis Aufgabe I: Betriebsverstärkungen bei Gleich- und Wechselspannung]
+    \small
+    \begin{align*}
+        V'_{\text{DC}}(\SI{48.7}{\kilo\ohm}) &= \num{16.42 +- 0.19} & &\text{(Theorie: } \num{16.23 +- 2.30},\ \text{Abw.: } \num{0.08}\,\sigma\text{)}\\
+        V'_{\text{DC}}(\SI{274}{\kilo\ohm}) &= \num{91.54 +- 0.65} & &\text{(Theorie: } \num{91.33 +- 12.92},\ \text{Abw.: } \num{0.02}\,\sigma\text{)}\\
+        V'_{\text{AC}}(\SI{274}{\kilo\ohm}) &= \num{89.32 +- 1.18} & &\text{(Theorie: } \num{91.33 +- 12.92},\ \text{Abw.: } \num{0.16}\,\sigma\text{)}\\
+        V'_{\text{AC}}(\SI{680}{\kilo\ohm}) &= \num{216.38 +- 2.72} & &\text{(Theorie: } \num{226.67 +- 32.06},\ \text{Abw.: } \num{0.32}\,\sigma\text{)}
+    \end{align*}
+\end{resultbox}
+
+% ==============================================================================
+% 4.2 AUFGABE II: IMPULSVERSTÄRKUNG
+% ==============================================================================
+\subsection{Aufgabe II: Impulsverstärkung}\label{sec:Aufgabe3}
+
+In Aufgabe~3 der Durchführung wurde die Übertragung eines Rechtecksignals der Wiederholfrequenz $f_0 = \SI{1}{\kilo\hertz}$ ($T = \SI{1.0}{\milli\second}$) für acht Kombinationen aus Eingangsbeschaltung (Schalter S1) und Gegenkopplung (Schalter S2) am Oszilloskop aufgenommen (Abbildungen~\ref{fig:osz_3_4} bis~\ref{fig:osz_3_11} im Messprotokoll auf den Seiten~4 und~5). Auf den Oszilloskopbildern zeigt die obere Kurve (Kanal~1, gelb) jeweils das eingespeiste Rechtecksignal und die untere Kurve (Kanal~2, blau) das um $\SI{180}{\degree}$ invertierte Ausgangssignal $U_a(t)$.
+
+\subsubsection{Einzelbeschreibung der acht Oszilloskopaufnahmen}
+
+Tabelle~\ref{tab:uebersicht_a3} gibt einen Überblick über die acht Schaltungskonstellationen sowie die jeweils beobachtete Pulsform.
+
+\begin{table}[H]
+    \centering
+    \caption{Übersicht der acht Oszilloskopaufnahmen zur Impulsverstärkung eines $\SI{1}{\kilo\hertz}$-Rechtecksignals}
+    \label{tab:uebersicht_a3}
+    \footnotesize
+    \setlength{\tabcolsep}{4pt}
+    \begin{tabular}{ll>{\raggedright\arraybackslash}p{4.3cm}>{\raggedright\arraybackslash}p{7.4cm}}
+        \toprule
+        \textbf{Abb.} & \textbf{Schalter} & \textbf{Beschaltung} & \textbf{Beobachtete Ausgangspulsform $U_a(t)$} \\
+        \midrule
+        \ref{fig:osz_3_4} & S1: 2, S2: 1 & AC ($\SI{22}{\micro\farad}$), $R_g = \SI{680}{\kilo\ohm}$ & Kaum starke Ecken, träger Anstieg. \\
+        \addlinespace[3pt]
+        \ref{fig:osz_3_5} & S1: 3, S2: 1 & Hochpass ($\SI{47}{\nano\farad}$), $R_g = \SI{680}{\kilo\ohm}$ & "Überdämpfung"\ kaum richtiges Erreichen der maximalen Amplitude \\
+        \addlinespace[3pt]
+        \ref{fig:osz_3_6} & S1: 2, S2: 2 & AC ($\SI{22}{\micro\farad}$), $R_g = \SI{274}{\kilo\ohm}$ & Deutlich steilerer Anstieg und schärfere Spitzen als bei $\SI{680}{\kilo\ohm}. \Rightarrow$ Geringerer Kopplungswiderstand führt zu ähnlicherem Signal \\
+        \addlinespace[3pt]
+        \ref{fig:osz_3_7} & S1: 3, S2: 2 & Hochpass ($\SI{47}{\nano\farad}$), $R_g = \SI{274}{\kilo\ohm}$ & Viel weniger Überdämpfung wie bei $\SI{680}{\kilo\ohm}$. Schnellerer Abfall und direkterer Anstieg. \\
+        \addlinespace[3pt]
+        \ref{fig:osz_3_8} & S1: 2, S2: 3 & AC ($\SI{22}{\micro\farad}$), $R_g = \SI{48.7}{\kilo\ohm}$ & Nahezu ideales, scharfkantiges Rechtecksignal mit steilem Anstieg und flachem Dach. \\
+        \addlinespace[3pt]
+        \ref{fig:osz_3_9} & S1: 3, S2: 3 & Hochpass ($\SI{47}{\nano\farad}$), $R_g = \SI{48.7}{\kilo\ohm}$ & Differenzierung: extrem scharfe, fast senkrechte Spannungsspitzen an den Flanken und exponentieller Abfall \\
+        \addlinespace[3pt]
+        \ref{fig:osz_3_10} & S1: 2, S2: 4 & AC ($\SI{22}{\micro\farad}$), $\SI{48.7}{\kilo\ohm} \parallel \SI{560}{\pico\farad}$ & Aktiver Tiefpass: Im Vergleich zu Abb.~\ref{fig:osz_3_8} sind die Flanken und Ecken wieder deutlich exponentiell abgerundet (ähnlich wie Abb.~\ref{fig:osz_3_6}); Dach bleibt flach. \\
+        \addlinespace[3pt]
+        \ref{fig:osz_3_11} & S1: 3, S2: 4 & Bandpass ($\SI{47}{\nano\farad}$ + $\SI{48.7}{\kilo\ohm} \parallel \SI{560}{\pico\farad}$) & Aktiver Bandpass: Die scharfen Spitzen aus Abb.~\ref{fig:osz_3_9} sind durch den Tiefpass abgerundet und gedämpft, während das Dach exponentiell abfällt. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Einfluss der Gegenkopplung und Bedeutung hoher sowie tiefer Frequenzanteile}
+
+Anhand der acht Aufnahmen und des im Messprotokoll (Abbildung~\ref{fig:mess_a2_plot}) dargestellten Frequenzgang lassen sich folgende Schlüsse ziehen:
+
+\begin{enumerate}
+    \item \textbf{Auswirkung der Gegenkopplungseinstellungen auf die Impulsform (S1 = 2, Abbildungen~\ref{fig:osz_3_4}, \ref{fig:osz_3_6}, \ref{fig:osz_3_8} und~\ref{fig:osz_3_10}):}
+    Mit abnehmendem Rückkopplungswiderstand, also stärkerer Gegenkopplung, steigt die obere Grenzfrequenz. Dadurch Schwingt die Schaltung schneller ein (steilerer Anstieg). 
+   
+    \item \textbf{Auswirkung des Fehlens hoher oder tiefer Frequenzen:}
+    \begin{itemize}
+        \item \emph{Fehlen hoher Frequenze: (Tiefpass)} Werden Frequenzen oberhalb von $f_g$ unterdrückt (Abbildungen~\ref{fig:osz_3_4} und~\ref{fig:osz_3_10}), kann die Ausgangsspannung dem abrupten Eingangssprung nicht mehr verzögerungsfrei folgen.
+    
+        \item \emph{Fehlen tiefer Frequenzen (Hochpass):} Wird der Eingangshochpass $C_{\text{HP}} = \SI{47}{\nano\farad}$ zugeschaltet (S1 = 3, Abbildungen~\ref{fig:osz_3_5}, \ref{fig:osz_3_7}, \ref{fig:osz_3_9} und~\ref{fig:osz_3_11}), werden niedrige Frequenzen unterdrückt. Den Auf- und Entladevorgang des vorgeschalteten Kondensators ist lässt sich in den "Haiflossen" erkennen, (sonst wär es ja wieder ein Rechtecksigmal)
+        \item \emph{Fehlen von hohen als auch tiefer Frequenzen (Bandpass, Abbildungen~\ref{fig:osz_3_5} und~\ref{fig:osz_3_11}):} Hier überlagern sich beide Effekte: Der Tiefpass verhindert den steilen Anstieg und kappt die Spitze des Differenzierpeaks, während der Hochpass das Halten der Spannung verhindert. Es entstehen stark gedämpfte, abgerundete Schwingungen auf dem Oszilloskop.
+    \end{itemize}
+\end{enumerate}
+
+% ==============================================================================
+% 5. DISKUSSION UND FAZIT
+% ==============================================================================
+\section{Diskussion und Fazit}\label{sec:Diskussion}
+
+
+\begin{enumerate}
+    \item \textbf{Verstärkung (Aufgabe~I):}
+    Anhand der gemessenen Kennlinien $U_a = f(U_1)$ konnte bestätigt werden, dass die Betriebsverstärkung $V'$ des invertierenden Verstärkers im linearen Arbeitsbereich innerhalb der Messgenauigkeit ausschließlich durch das Verhältnis $R_g / R_e$ der äußeren Beschaltungswiderstände bestimmt wird. Die experimentell ermittelten Verstärkungen $V'_{\text{DC}}(\SI{48.7}{\kilo\ohm}) = \num{16.42 +- 0.19}$, $V'_{\text{DC}}(\SI{274}{\kilo\ohm}) = \num{91.54 +- 0.65}$, $V'_{\text{AC}}(\SI{274}{\kilo\ohm}) = \num{89.32 +- 1.18}$ und $V'_{\text{AC}}(\SI{680}{\kilo\ohm}) = \num{216.38 +- 2.72}$ stimmen mit Abweichungen von lediglich $\num{0.02}\,\sigma$ bis $\num{0.32}\,\sigma$ ausgezeichnet mit den theoretischen Werten ($\num{16.23 +- 2.30}$, $\num{91.33 +- 12.92}$ und $\num{226.67 +- 32.06}$) überein. Auch der direkte Vergleich zwischen Gleich- und Wechselspannungsmessung bei derselben Rückkopplung $R_g = \SI{274}{\kilo\ohm}$ zeigt eine sehr gute Konsistenz ($z = \num{1.65}\,\sigma$). Dass die Wechselspannungsverstärkungen bei $f = \SI{1}{\kilo\hertz}$ geringfügig unter den Gleichspannungswerten liegen, ist bereits auf das Einsetzen des frequezabhängigen Verstärkungsabfalls bei $\SI{1}{\kilo\hertz}$ sowie auf das Teilerverhältnis $\frac{22\,\si{\ohm}}{200\,\si{\ohm}+22\,\si{\ohm}} = \frac{1}{10{,}09}$ des Eingangsteilers zurückzuführen (immerhin 1\%). Bei $R_g = \SI{274}{\kilo\ohm}$ im Gleichspannungsbetrieb konnte zudem die Stättigung der Verstärkungskurve durch die Betriebsspannung ($\pm\SI{15}{\volt}$) nachgewiesen werden. 
+
+    \item \textbf{Auswirkung auf die Impulsform (Aufgabe~II):}
+    Der im Messprotokoll (Abbildung~\ref{fig:mess_a2_plot}) aufgexnommene Frequenzgang zwischen $\SI{100}{\hertz}$ und $\SI{300}{\kilo\hertz}$ bestätigte den fundamentalen Zusammenhang zwischen Gegenkopplung und Bandbreite: Eine Reduktion von $R_g$ senkt die Niederfrequenzverstärkung $V'_0$, erweitert jedoch im gleichen Maße die Bandbreite $f_g$. (Für den Praktischen Fall gut zu wissen). 
+    Fehlerabwichungen
+
+    Die Oszilloskopaufnahmen eines $\SI{1}{\kilo\hertz}$-Rechtecksignals demonstrierten den Zusammenhang zwischen Frequenzgang und Zeitbereich: Während eine hohe Bandbreite ($R_g = \SI{48.7}{\kilo\ohm}$) eine nahezu verzerrungsfreie Rechteckübertragung erlaubt, führt das Fehlen hoher Frequenzen (kleines $f_g$ bei großem $R_g$ oder aktivem Tiefpass) zu einer Lähmung der Anstiege und Abflachungen (Integrierwirkung\footnotemark[1]), und das Fehlen tiefer Frequenzen durch den Eingangshochpass zu einem exponentiellen Einbruch des Impulsdachs (Differenzierwirkung\footnotemark[1])
+\end{enumerate}
+
+\footnotetext[1]{Versuch 241 - Hier wird beschreiben die Integrier und Differenzierwirkung des Hoch- und Tiefpass' \cite{PAPskript}}
+
+\clearpage
+
+\listoffigures
+
+\listoftables
+
+\begin{thebibliography}{5}
+    \bibitem{PAPskript} Dr. J. Wagner, \emph{Physikalisches Anfängerpraktikum -- Praktikum IIb, Versuch 242: Spannungsverstärkung mit dem Operationsverstärker}, Universität Heidelberg, Stand 11/2025.
+    \bibitem{ilberg1988physikalisches} W. Ilberg, M. Krötzsch, \emph{Physikalisches Praktikum für Anfänger}, BSB B. G. Teubner Verlagsgesellschaft, Leipzig (1985).
+    \bibitem{tietze} U. Tietze, Ch. Schenk, E. Gamm, \emph{Halbleiter-Schaltungstechnik}, Springer-Verlag, Berlin/Heidelberg.
+\end{thebibliography}
+
+\appendix
+
+\section{Anhang: Code}
+
+\include{code/V242.tex}
+
+
+\end{document}
+
