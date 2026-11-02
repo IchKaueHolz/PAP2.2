@@ -1,0 +1,267 @@
+\documentclass[12pt,a4paper,titlepage]{scrartcl}
+
+\usepackage{comment}
+\usepackage[main=ngerman,english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=3cm,head=29pt,foot=25pt}
+\setlength{\footheight}{25pt}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,mathtools}
+\numberwithin{equation}{section}
+\numberwithin{table}{section}
+\numberwithin{figure}{section}
+\usepackage{siunitx}
+\sisetup{locale=US, separate-uncertainty=true, per-mode=fraction}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[automark]{scrlayer-scrpage}
+\usepackage[most]{tcolorbox}
+\usepackage{hyperref}
+\usepackage{pdfpages}
+\usepackage{csvsimple-l3}
+\usepackage{longtable}
+\usepackage{graphicx}
+
+
+%\input{../../jupyterpackages.tex}
+
+% jupyter nbconvert --to latex 'Path'
+% enferne usepackages und begin{document} und end{document}
+% \include in main.tex mit \include{Path}
+
+
+\newcommand{\pdfabbildung}[2]{%
+    \refstepcounter{figure}%
+    \addcontentsline{lof}{figure}{\protect\numberline{\thefigure}#1}%
+    \label{#2}%
+}
+
+\newcommand{\pdftabelle}[2]{%
+    \refstepcounter{table}%
+    \addcontentsline{lot}{table}{\protect\numberline{\thetable}#1}%
+    \label{#2}%
+}
+
+
+\hypersetup{colorlinks=true, linkcolor=blue!60!black, urlcolor=blue!60!black, citecolor=blue!60!black}
+
+\clearpairofpagestyles
+
+\chead{%
+    \versuch\hfill\autor\\
+    \rule{\textwidth}{0.2pt}%
+}
+\cfoot{%
+    \rule{\textwidth}{0.2pt}\\[-0.5ex]
+    \pagemark\ 
+}
+\addtokomafont{pagefoot}{\small}
+\setlength{\parindent}{0pt}
+
+\newtcolorbox{resultbox}[1][]{ 
+    enhanced,
+    colback=black!4!white,
+    colframe=black!65!black,
+    boxrule=0.8pt,
+    arc=0.0mm,
+    title=#1,
+    fonttitle=\bfseries,
+    %drop shadow
+}
+
+
+\newcommand{\versuch}{Versuch 243}
+\newcommand{\titel}{Thermisches Rauschen}
+\newcommand{\praktikum}{Physikalisches Anfängerpraktikum 2.2}
+\newcommand{\autor}{Jonathan Gießen}
+\newcommand{\partner}{Sinan Uysal}
+\newcommand{\gruppe}{Gruppe 2}
+\newcommand{\datum}{28. Oktober 2026}
+\newcommand{\betreuer}{Alicia Schneider}
+
+\begin{document}
+
+\pagestyle{scrheadings}
+
+\begin{titlepage}
+
+
+
+    \centering
+    \vspace*{4cm}
+    {\large Universität Heidelberg\par}
+    {\small Fakultät für Physik und Astronomie\par}
+    {\Large \praktikum\par}
+    \vspace{0.8cm}
+    {\LARGE \bfseries \versuch\ -- \titel\par}
+    \vspace{1.5cm}
+
+    \begin{tabular}{ll}
+        \textbf{Autor:} & \autor\\
+        \textbf{Partner:} & \partner\\
+        \textbf{Gruppe:} & \gruppe\\
+        \textbf{Betreuer:} & \betreuer\\
+        \textbf{Versuchsdatum:} & \datum\\
+    \end{tabular}
+
+    \vfill
+    \hrulefill\
+\end{titlepage}
+
+\tableofcontents
+
+\bigskip
+\begin{tcolorbox}[colback=gray!5,colframe=gray!60,boxrule=0.8pt,arc=0.01mm,title=KI-Hinweis]
+    Für die sprachliche Formulierung dieses Protokolls wurde in der Einleitung~\ref{sec:Einleitung} und bei Grundlagen!~\ref{sec:Grundlagen} KI-gestützte Textgenerierung verwendet. 
+\end{tcolorbox}.
+
+\clearpage
+
+
+\section{Einleitung}\label{sec:Einleitung}
+Bei einer Temperatur von $T > \SI{0}{\kelvin}$ kommt es in jedem elektrischen Leiter aufgrund der thermischen Anregung zu einer ungeordneten Brownschen Bewegung der freien Ladungsträger. Selbst wenn keine äußere Spannung anliegt, führt diese statistische Bewegung zu kurzzeitigen Ladungsverschiebungen und damit zu einer zeitlich fluktuierenden Spannung an den Enden des Leiters, die als \emph{thermisches Rauschen} bezeichnet wird.
+
+In der praktischen Messtechnik stellt das thermische Rauschen physikalische Grenzen für die Nachweisempfindlichkeit kleiner elektrischer Signale dar, die sich nur durch Kühlung, Mittelwertbildung oder eine Begrenzung der Messbandbreite reduzieren lassen. Jedoch kann sich das Rauschen auch unmittelbar mit der thermischen Energie $k_B T$ zur Temperaturbestimmung zum Beispiel in einem Rauschthermometer zu Nutze gemacht werden.
+
+\medskip
+Ziel des vorliegenden Versuchs~243 ist es, das Rauschspektrum ohmscher Widerstände qualitativ zu untersuchen, den Frequenzgang sowie die äquivalente Rauschbandbreite der verwendeten Verstärker- und Filterelektronik zu bestimmen und aus der Abhängigkeit der Rauschspannung vom Widerstandswert bei Raumtemperatur die Boltzmannkonstante $k_B$ zu ermitteln.
+
+\section{Grundlagen und Theorie}\label{sec:Grundlagen}
+
+\subsection{Thermisches Rauschen und Nyquist-Beziehung}
+In einem ohmschen Widerstand $R$, der sich im thermischen Gleichgewicht bei der absoluten Temperatur $T$ befindet, führen die Leitungselektronen infolge Stößen mit dem Kristallgitter eine ungerichtete thermische Zufallsbewegung aus. Da keine Raumrichtung bevorzugt ist, verschwindet der zeitliche Mittelwert der resultierenden Rauschspannung $U_r(t)$ an den Klemmen des Widerstands:
+\begin{equation}
+    \langle U_r \rangle = \lim_{t' \to \infty} \frac{1}{t'} \int_{0}^{t'} U_r(t)\,\mathrm{d}t = 0 \,.
+    \label{eq:mittelwert}
+\end{equation}
+Zur quantitativen Beschreibung der Rauschspannung wird daher ihr Effektivwert $U_{r,\text{eff}} = \sqrt{\langle U_r^2 \rangle}$, also die Wurzel aus dem zeitlichen Mittelwert des Spannungsquadrats, herangezogen:
+\begin{equation}
+    \sqrt{\langle U_r^2 \rangle} = \sqrt{\lim_{t' \to \infty} \frac{1}{t'} \int_{0}^{t'} U_r^2(t)\,\mathrm{d}t} \,.
+    \label{eq:effektivwert}
+\end{equation}
+Im Frequenzspektrum einer thermischen Rauschquelle sind bis in den Terahertz-Bereich alle Frequenzen mit gleicher Leistungsdichte vertreten, weshalb man wie beim weißen Licht von \emph{weißem Rauschen} spricht. Für das mittlere Spannungsquadrat innerhalb einer Messbandbreite $\Delta f$ gilt die die \emph{Nyquist-Beziehung} \cite{PAPskript}:
+\begin{equation}
+    \langle U_r^2 \rangle = 4 k_B T R \Delta f \,,
+    \label{eq:nyquist}
+\end{equation}
+wobei $k_B$ die Boltzmannkonstante, $T$ die absolute Temperatur in Kelvin und $R$ den ohmschen Widerstand bezeichnet (Blindwiderstände wie ideale Spulen oder Kondensatoren erzeugen hingegen kein thermisches Rauschen).
+
+\subsection{Messprinzip, Verstärkerrauschen und äquivalente Rauschbandbreite}
+Da die thermischen Rauschspannungen bei Raumtemperatur ($T \approx \SI{300}{\kelvin}$) im Bereich weniger Mikrovolt liegen, wird das Signal im Versuch zunächst mit einem rauscharmen Vorverstärker um den Faktor $\num{1000}$ ($\SI{60}{\deci\bel}$) verstärkt und anschließend durch einen Bandpassfilter (Reihenschaltung aus Hoch- und Tiefpass) gefiltert, bevor der Effektivwert mit einem Digitalmultimeter gemessen wird. Der Bandpassfilter erfüllt dabei zwei Aufgaben:
+
+Der steilflankige Tiefpass begrenzt die Bandbreite, sodass mit einer bekannten Bandbreite gearbeitet werden kann, da das Messgerät eine künstliche effektive Bandbreite hat, während der Hochpass niederfrequente Störeinkopplungen unterdrückt. Solche niedrigfrequenten Störungen sind insbesondere zum Beispieldas $\SI{50}{\hertz}$-Netzbrummen und dessen Harmonische Schwingungen. Aus diesem Grund wird der Verstärker über Batterien (Gleichstrom) statt über ein Netzgerät (Wechselstrom) versorgt.
+
+Da die elektronischen Bauteile des Verstärkers selbst ein eigenes Rauschsignal $U_V(t)$ erzeugen, das statistisch unabhängig vom Widerstandsrauschen $U_R(t)$ ist ($\langle U_R U_V \rangle = \langle U_R \rangle \langle U_V \rangle = 0$), addieren sich die mittleren Spannungsquadrate von verstärktem Widerstandsrauschen und Verstärker-Eigenrauschen am Ausgang \cite{PAPskript}:
+\begin{equation}
+    \langle U_{R+V}^2 \rangle = \langle (U_R + U_V)^2 \rangle = \langle U_R^2 \rangle + \langle U_V^2 \rangle \,.
+    \label{eq:additivitaet}
+\end{equation}
+Das Eigenrauschen $\langle U_V^2 \rangle$ lässt sich durch eine Kurzschlussmessung ($R = \SI{0}{\ohm}$) direkt bestimmen und von den Messwerten abziehen.
+
+Weil ein reales Verstärker- und Filtersystem keinen ideal rechteckförmigen Durchlassbereich $\Delta f$ besitzt, muss dessen Frequenzgang
+\begin{equation}
+    g(f) = \left.\frac{U_{\text{aus}}(f)}{U_{\text{ein}}(f)}\right|_f
+    \label{eq:frequenzgang_def}
+\end{equation}
+berücksichtigt werden. Für ein infinitesimales Frequenzintervall $\mathrm{d}f$ trägt das Widerstandsrauschen mit $\mathrm{d}\langle U_{\text{aus}}^2 \rangle = 4 k_B T R\, g(f)^2\,\mathrm{d}f$ zum Ausgangssignal bei. Integration über alle Frequenzen liefert unter Einbeziehung des Verstärkerrauschens $\langle U_V^2 \rangle$ \cite{PAPskript}:
+\begin{equation}
+    \langle U_{\text{aus}}^2 \rangle = 4 k_B T R \int_{0}^{\infty} g(f)^2\,\mathrm{d}f + \langle U_V^2 \rangle = 4 k_B T R B + \langle U_V^2 \rangle \,,
+    \label{eq:uaus_gesamt}
+\end{equation}
+mit der \emph{äquivalenten Rauschbandbreite} des Messsystems:
+\begin{equation}
+    B = \int_{0}^{\infty} g(f)^2\,\mathrm{d}f \,.
+    \label{eq:rauschbandbreite}
+\end{equation}
+Zur experimentellen Bestimmung von $g(f)$ wird ein Funktionsgenerator über ein Dämpfungsglied mit dem Abschwächungsfaktor $D = 10^{-3}$ ($\SI{-60}{\deci\bel}$) an den Verstärkereingang angeschlossen, damit der $\num{1000}$-fach verstärkende Vorverstärker nicht übersteuert wird. Aus dem Verhältnis von Ausgangs- zu Eingangseffektivspannung folgt dann:
+\begin{equation}
+    g(f) = \frac{1}{D}\,\frac{\sqrt{\langle U_{\text{aus}}^2(f) \rangle}}{\sqrt{\langle U_{\text{ein}}^2(f) \rangle}} \,.
+    \label{eq:gf_mess}
+\end{equation}
+Trägt man die rauschbereinigte quadratische Ausgangsspannung $\langle U_{\text{aus}}^2 \rangle - \langle U_V^2 \rangle$ gegen den Widerstand $R$ auf, so ergibt sich gemäß Gleichung~\eqref{eq:uaus_gesamt} eine Ursprungsgerade der Steigung $m = 4 k_B T B$, woraus sich die Boltzmannkonstante bestimmen lässt:
+\begin{equation}
+    k_B = \frac{\langle U_{\text{aus}}^2 \rangle - \langle U_V^2 \rangle}{4 T R B} = \frac{m}{4 T B} \,.
+    \label{eq:boltzmann}
+\end{equation}
+
+\subsection{Literaturwerte}
+Der Literaturwert der Boltzmannkonstante beträgt:
+\begin{equation*}
+    k_{B,\text{lit}} = \SI{1.380649e-23}{\joule\per\kelvin} \,.
+\end{equation*}
+
+\section{Messprotokoll}       
+
+\subsection{Durchführung}
+Zu Beginn des Versuchs wurden das Batterienetzteil, der Vorverstärker ($\SI{60}{\deci\bel}$) sowie das Effektivwert-Multimeter (Agilent HP34401A) eingeschaltet, um eine thermische Einlaufzeit von mindestens $\SI{15}{\minute}$ zu gewährleisten. Die Raumtemperatur wurde mit dem Zimmerthermometer zu $T_{\text{Raum}} = \SI{22.3 +- 0.1}{\celsius}$ bestimmt.
+
+\begin{enumerate}
+    \item \textbf{Aufgabe 1 (Qualitative Untersuchung des Rauschspektrums):}
+    Das abgeschirmte Widerstandsgehäuse wurde direkt auf den Eingang des Vorverstärkers gesteckt und dessen Ausgang mit Kanal~1 des PC-Oszilloskops verbunden. Mit dem Spektrumanalysator der Software \emph{WaveForms} ($\SI{100}{\hertz}$ bis $\SI{3}{\mega\hertz}$, logarithmische Skala, \texttt{PeakHold} über $50$~Mittelungen) wurde zunächst ohne Bandfilter das Rauschspektrum für $R = \SI{5}{\kilo\ohm}$ und $R = \SI{20}{\kilo\ohm}$ aufgenommen und der Verstärkungsabfall bei hohen Frequenzen beobachtet. Anschließend wurde der Bandpassfilter zwischen Verstärker und Oszilloskop geschaltet und dessen Einfluss auf das Spektrum dokumentiert (Tabelle~\ref{tab:mess_a1}).
+    \item \textbf{Aufgabe 2 (Rauschspannung als Funktion des Widerstands):}
+    Das Widerstandsgehäuse wurde direkt auf den Verstärkereingang gesteckt, der Verstärkerausgang über ein kurzes Koaxialkabel mit dem Bandpassfilter verbunden und dessen Ausgang an das Effektivwert-Multimeter angeschlossen. Über das Messprogramm am PC wurden für sechs Metallfilmwiderstände ($R = \SI{5}{\kilo\ohm}$ bis $\SI{30}{\kilo\ohm}$ in $\SI{5}{\kilo\ohm}$-Schritten, Toleranz $<\SI{0.5}{\percent}$) jeweils $N = 100$ Einzelmessungen der Ausgangs-Rauschspannung (Messgenauigkeit des Voltmeters $\SI{0.3}{\percent}$) aufgezeichnet und daraus Mittelwert sowie Standardabweichung bestimmt. Zur Ermittlung des Verstärker-Eigenrauschens $\sqrt{\langle U_V^2 \rangle}$ wurde das Widerstandsgehäuse durch einen Kurzschlussstecker ($R = \SI{0}{\ohm}$) ersetzt und die Messung analog wiederholt (Tabelle~\ref{tab:mess_a2}).
+    \item \textbf{Aufgabe 3 (Frequenzgang von Verstärker und Bandfilter):}
+    Anstelle des Widerstandsgehäuses wurde das $\SI{-60}{\deci\bel}$-Dämpfungsglied ($D = \num{0.001} \pm \SI{0.2}{\percent}$) direkt auf den Verstärkereingang gesteckt und mit dem Funktionsgenerator verbunden, während der Ausgang des Bandpassfilters an Kanal~1 des Oszilloskops angeschlossen wurde. Mit dem Netzwerkanalysator der Oszilloskop-Software wurde der Frequenzgang im Bereich von $\SI{200}{\hertz}$ bis $\SI{200}{\kilo\hertz}$ in $1001$~logarithmischen Schritten bei einer Signalamplitude von $\SI{1}{\volt}$ automatisiert vermessen und als CSV-Datei exportiert (Tabelle~\ref{tab:mess_a3}).
+\end{enumerate}
+
+\pdfabbildung{Messaufbau des Versuchs 243 (Messprotokoll S.~1).}{fig:messaufbau}
+\pdftabelle{Beobachtungen und Spektren zu Aufgabe 1 (Messprotokoll S.~2).}{tab:mess_a1}
+\pdftabelle{Gemessene Rauschspannungen für verschiedene Widerstände sowie Eigenrauschen bei $R = \SI{0}{\ohm}$ zu Aufgabe 2 (Messprotokoll S.~3).}{tab:mess_a2}
+\pdftabelle{Einstellungen des Netzwerkanalysators und Dämpfungsglieds zu Aufgabe 3 (Messprotokoll S.~4).}{tab:mess_a3}
+
+\includepdf[
+    pages=-,
+    width=\textwidth,
+    height=0.92\textheight,
+    keepaspectratio,
+    pagecommand={\thispagestyle{scrheadings}},
+    pagecommand*={\thispagestyle{scrheadings}\subsection{Versuchsaufbau und Aufgaben}}
+]{../Messprotokoll 243.pdf}
+
+\section{Auswertung}
+
+\subsection{Aufgabe 1: Graphische Darstellung der Messdaten}
+
+
+
+
+\clearpage
+
+\listoffigures
+
+
+\listoftables
+
+\begin{thebibliography}{5}
+    \bibitem{PAPskript} Dr. J.Wagner, \emph{Physikalisches Anfängerpraktikum IIb}, Stand 10/2026
+    \bibitem{ilberg1988physikalisches} W. Ilberg, M. Krötzsch, \emph{Physikalisches Praktikum für Anfänger}, BSB B. G. Teubner Verlagsgesellschaft, Leipzig (1985).
+\end{thebibliography}
+
+
+
+
+\begin{comment}
+
+\begin{table}[H]
+    \centering
+    \caption{Mess- und Geräteparameter für die exemplarische Berechnung (Messung 28).}
+    \label{tab:parameter_messung_28}
+    \begin{tabular}{ll}
+        \toprule
+        \textbf{Größe} & \textbf{Wert} \\
+        \midrule
+        Fallstrecke & $s_1 = 10\,\text{Skt} = 5.00 \cdot 10^{-4}\,\text{m}$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+\end{comment}
+
+
+\end{document}
