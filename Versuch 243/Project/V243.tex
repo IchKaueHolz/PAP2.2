@@ -1,6 +1,8 @@
 
     \hypertarget{auswertung-verusch-243}{%
-\section{Auswertung verusch 243}\label{auswertung-verusch-243}}
+\section{Auswertung}\label{auswertung-verusch-243}}
+
+\emph{Die folgende Auswertung ist etwas anders wie normalerweise, da sie komplett in Jupyter Notetbook geschrieben wurde (so wie es in der Aufgabenstellung vorgegeben war). Das ganze ist in in Latex eingebettetes jupyter notebook.}
 
 \hypertarget{aufgabe-1-import-und-graphische-darstellung-der-messdaten}{%
 \subsection{Aufgabe 1: Import und graphische Darstellung der
@@ -339,7 +341,7 @@ Die Raumtemperatur beträgt \(T = (22.30\,\pm 0.10)^\circ\text{C}\)
 \end{tcolorbox}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-Boltzmannkonstante: k\_B = (1.39765±0.00392)×10⁻²³ J/K
+Boltzmannkonstante: k\_B = (1.39765±0.00392)×10^23 J/K
 systematischer Fehler: 2.795e-25 J/K
     \end{Verbatim}
 
@@ -360,14 +362,14 @@ np.float64(0.6022138763082926)
 \end{Verbatim}
 \end{tcolorbox}
         
-    \hypertarget{ergebnis}{%
-\subsection{Ergebnis}\label{ergebnis}}
-
+\bigskip
+\begin{resultbox}[Ergebnis]
 Die berechnete Boltzmannkonstante beträgt
 \[ k_B = (1.398\,\pm0.004\,\text{stat.}\,\pm 0.028\,\text{syst.}) \cdot 10^{-23} \frac{\text{J}}{\text{K}}\]
 
 Die Sigma-Abweichung berechnet sich durch
 \[ \sigma = \frac{k_B - k_{B,\text{lit}}}{\sqrt{(\Delta \text{stat})^2 + (\Delta \text{syst.})^2}} = 0.6 \Rightarrow 0.6\sigma \]
+\end{resultbox}
 
 Dies spricht für eine sehr gute Übereinstimmung
 
@@ -391,4 +393,4 @@ der systematische Fehler ist.
     
     
 
-    
+

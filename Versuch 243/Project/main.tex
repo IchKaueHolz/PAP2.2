@@ -225,11 +225,33 @@ Zu Beginn des Versuchs wurden das Batterienetzteil, der Vorverstärker ($\SI{60}
     pagecommand*={\thispagestyle{scrheadings}\subsection{Versuchsaufbau und Aufgaben}}
 ]{../Messprotokoll 243.pdf}
 
-\section{Auswertung}
 
 \include{V243.tex}
 
 
+\section{Fazit und Diskussion}\label{sec:Fazit}
+
+Im Rahmen des Versuchs~243 wurde das thermische Rauschen ohmscher Widerstände untersucht und über den Frequenzgang der Messkette sowie die Widerstandsabhängigkeit der Rauschspannung die Boltzmannkonstante $k_B$ experimentell bestimmt.
+
+\medskip
+In der qualitativen Voruntersuchung des Rauschspektrums (Messprotokoll Aufgabe~1) zeigte sich zunächst ohne Bandpassfilter das erwartete weiße Rauschen, dessen Amplitude beim größeren Widerstand ($R = \SI{20}{\kilo\ohm}$) deutlich höher lag als bei $R = \SI{5}{\kilo\ohm}$. Was mit Erwartung durch die Nyquist-Beziehung übereinstimmt. Zu hohen Frequenzen hin war bereits ohne externen Filter ein Abfall des Spektrums zu beobachten, der auf die endliche Bandbreite des Vorverstärkers, Kabel- und Eingangskapazitäten zurückzuführen und das Multimeter zurückzuführenr ist. Durch das Zuschalten des Bandpassfilters wurde das Spektrum wie erwartet scharf auf den Durchlassbereich zwischen $ \approx \SI{1}{\kilo\hertz}$ und $\approx \SI{50}{\kilo\hertz}$ begrenzt, wodurch niederfrequente Störungen (wie das $\SI{50}{\hertz}$-Netzbrummen) ausgeblendet und eine klare Messbandbreite geschaffen wurden.
+
+\medskip
+Bei der Auswertung des mit dem Netzwerkanalysator aufgenommenen Frequenzgangs $g(f)$ (Auswertung Aufgabe~1 und~2) war im doppeltlogarithmischen Diagramm ein ausgeprägtes Plateau sowie scharfe Flanken zu erkennen. Die Anpassung der theoretischen Bandpassfunktion lieferte für die Grenzfrequenzen und Filterordnungen Werte, die den Verlauf der Messdaten im Durchlassbereich und an den Flanken gut wiedergeben. Lediglich an der hochfrequenten Flanke fiel die gemessene Verstärkung etwas steiler ab als die ideale Kurve, da sich hier der zusätzliche hochfrequente Abfall des Messaufbaus zeigt. Aus der anschließenden numerischen Integration von $g(f)^2$ (Auswertung Aufgabe~3) ergab sich die äquivalente Rauschbandbreite zu
+\begin{equation*}
+    B = \SI{4.7620e10}{\hertz} \,,
+\end{equation*}
+wobei der rein numerische Integrationsfehler ($\Delta B_{\text{num}} \approx \SI{68}{\hertz}$) gegenüber dem systematischen Fehler der Messkette ($\SI{2}{\percent}$) völlig vernachlässigbar ist.
+
+\medskip
+Für die Bestimmung der Boltzmannkonstante (Auswertung Aufgabe~4) wurde die um das Verstärker-Eigenrauschen ($U_V = \SI{1.3718}{\milli\volt}$ bei $R = \SI{0}{\ohm}$) korrigierte quadratische Ausgangsspannung $D = U_{\text{aus}}^2 - U_V^2$ gegen den Widerstand $R$ aufgetragen. Unter Einbeziehung sowohl des statistischen Fehlers der je $N = 100$ Einzelmessungen als auch der systematischen Messunsicherheit des Effektivwert-Voltmeters von $\SI{0.3}{\percent}$ bestätigte der lineare Ursprungsfit mit einer Steigung von $m = \SI{786.6 +- 2.2e-12}{\volt\squared\per\ohm}$ den linearen Zusammenhang der Nyquist-Formel. Das reduzierte Chi-Quadrat von $\chi^2_{\text{red}} = \num{0.933}$ liegt sehr nahe am Idealwert von~$1$, und die zugehörige Fitwahrscheinlichkeit von $\SI{46}{\percent}$ belegt, dass die Streuung der Messpunkte um die Ursprungsgerade vollständig im Rahmen der Messunsicherheit liegt.\footnote{bisher einer der besten Fits, die ich je ich je gemacht habe. WOW!}
+
+\medskip
+Aus der gefitteten Geradensteigung und der Raumtemperatur $T = \SI{295.45 +- 0.10}{\kelvin}$ wurde schließlich die Boltzmannkonstante zu
+\begin{equation*}
+    k_B = \left(\num{1.398} \pm \num{0.004}\,\text{(stat.)} \pm \num{0.028}\,\text{(syst.)}\right) \cdot \SI{e-23}{\joule\per\kelvin}
+\end{equation*}
+bestimmt. Im Vergleich zum Literaturwert $k_{B,\text{lit}} = \SI{1.38065e-23}{\joule\per\kelvin}$ weist das experimentelle Ergebnis eine Abweichung von lediglich $\num{0.6}\,\sigma$ auf und stimmt somit sehr gut mit der theoretischen Erwartung überein. Die getrennte Betrachtung der Unsicherheiten verdeutlicht zudem, dass die zufälligen Schwankungen des thermischen Rauschens durch die Mittelung über je $100$~Einzelmessungen bereits so stark reduziert wurden, dass der statistische Fehler um fast eine Größenordnung kleiner ist als der systematische Fehler.
 
 
 \clearpage
