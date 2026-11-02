@@ -1,0 +1,394 @@
+
+    \hypertarget{auswertung-verusch-243}{%
+\section{Auswertung verusch 243}\label{auswertung-verusch-243}}
+
+\hypertarget{aufgabe-1-import-und-graphische-darstellung-der-messdaten}{%
+\subsection{Aufgabe 1: Import und graphische Darstellung der
+Messdaten}\label{aufgabe-1-import-und-graphische-darstellung-der-messdaten}}
+
+Hier werden die Messdaten des Multimeters aufgetragen und Betrachtet
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import}\PY{+w}{ }\PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot}\PY{+w}{ }\PY{k}{as}\PY{+w}{ }\PY{n+nn}{plt}
+
+\PY{k+kn}{import}\PY{+w}{ }\PY{n+nn}{numpy}\PY{+w}{ }\PY{k}{as}\PY{+w}{ }\PY{n+nn}{np}
+
+\PY{k+kn}{import}\PY{+w}{ }\PY{n+nn}{numpy}\PY{+w}{ }\PY{k}{as}\PY{+w}{ }\PY{n+nn}{np}
+\PY{c+c1}{\PYZsh{} Schöner für import}
+\PY{n}{np}\PY{o}{.}\PY{n}{seterr}\PY{p}{(}\PY{n}{over}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ignore}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{invalid}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ignore}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+
+
+
+\PY{n}{f}\PY{p}{,} \PY{n}{gain\PYZus{}roh} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{loadtxt}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Messung Gruppe2.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{skiprows}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{delimiter}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{,}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{unpack}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{usecols}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{D} \PY{o}{=} \PY{l+m+mf}{1e\PYZhy{}3} \PY{c+c1}{\PYZsh{} Verstärkung}
+
+
+\PY{n}{g} \PY{o}{=} \PY{n}{gain\PYZus{}roh} \PY{o}{/} \PY{n}{D}
+
+
+\PY{n}{fig}\PY{p}{,} \PY{n}{ax} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Loglog plot}
+\PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Frequenz \PYZdl{}f\PYZdl{} [Hz]}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Verstärkung \PYZdl{}g\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Frequenzgang}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{loglog}\PY{p}{(}\PY{n}{f}\PY{p}{,} \PY{n}{g}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{None}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{marker}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Messwerte}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{axis}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{200}\PY{p}{,} \PY{l+m+mf}{2e5}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mf}{1.5E3}\PY{p}{]}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{,} \PY{n}{which}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{both}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ls}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{V243_files/V243_1_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{kommentar}{%
+\paragraph{Kommentar}\label{kommentar}}
+
+Hier Lässt sich der erwartete Frequenzgang des Bandpassfilters anhand
+der symmetrischen Flanken sehr deutlich erkennen. (Der Abgleich stimmt
+mit dem gezeigten Plot der Software überein). Es lässt sich ihm
+hochfrequenten Bereich kurz vor Beginnn der Flanke bereits ganz leicht
+der Frequenzgang des Aufbaus ohne Bandpassfilters erkennen.
+
+    \hypertarget{aufgabe-2-funktion-anpassen}{%
+\subsection{Aufgabe 2: Funktion
+anpassen}\label{aufgabe-2-funktion-anpassen}}
+
+Nun wird die Bandpassfunktion an die Messdaten gefittet
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from}\PY{+w}{ }\PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize}\PY{+w}{ }\PY{k+kn}{import} \PY{n}{curve\PYZus{}fit}
+
+\PY{c+c1}{\PYZsh{} fitting function (Frequenzgang Bandpass)}
+
+\PY{k}{def}\PY{+w}{ }\PY{n+nf}{fit\PYZus{}func}\PY{p}{(}\PY{o}{*}\PY{n}{args}\PY{p}{)}\PY{p}{:}
+    \PY{n}{f}\PY{p}{,} \PY{n}{V}\PY{p}{,} \PY{n}{W1}\PY{p}{,} \PY{n}{W2}\PY{p}{,} \PY{n}{n1}\PY{p}{,} \PY{n}{n2} \PY{o}{=} \PY{n}{args}
+    \PY{k}{return} \PY{n}{V}\PY{o}{/}\PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{1} \PY{o}{+} \PY{p}{(}\PY{n}{f}\PY{o}{/}\PY{n}{W1}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{n1}\PY{p}{)} \PY{o}{*} \PY{p}{(}\PY{l+m+mi}{1} \PY{o}{+} \PY{p}{(}\PY{n}{W2}\PY{o}{/}\PY{n}{f}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{n2}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{p0} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{1e3}\PY{p}{,} \PY{l+m+mf}{1e3}\PY{p}{,} \PY{l+m+mi}{50000}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{]} 
+\PY{c+c1}{\PYZsh{} Verstärkung, untere Grenzfrequenz, obere Grenzfrequenz, Filterordnung unten, Filterordnung oben}
+
+\PY{n}{popt}\PY{p}{,} \PY{n}{pcov} \PY{o}{=} \PY{n}{curve\PYZus{}fit}\PY{p}{(}\PY{n}{fit\PYZus{}func}\PY{p}{,} \PY{n}{f}\PY{p}{,} \PY{n}{g}\PY{p}{,} \PY{n}{p0}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Fit Parameter: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{V=}\PY{l+s+si}{\PYZob{}}\PY{n}{popt}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{+/\PYZhy{}}\PY{l+s+si}{\PYZob{}}\PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{pcov}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{, }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{W1=}\PY{l+s+si}{\PYZob{}}\PY{n}{popt}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{+/\PYZhy{}}\PY{l+s+si}{\PYZob{}}\PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{pcov}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{, }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{W2=}\PY{l+s+si}{\PYZob{}}\PY{n}{popt}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{+/\PYZhy{}}\PY{l+s+si}{\PYZob{}}\PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{pcov}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{)}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{, }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{n1=}\PY{l+s+si}{\PYZob{}}\PY{n}{popt}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{+/\PYZhy{}}\PY{l+s+si}{\PYZob{}}\PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{pcov}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{, }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{n2=}\PY{l+s+si}{\PYZob{}}\PY{n}{popt}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{]}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{+/\PYZhy{}}\PY{l+s+si}{\PYZob{}}\PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{pcov}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+
+\PY{k}{if} \PY{n}{ax}\PY{o}{.}\PY{n}{get\PYZus{}legend}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{n}{ax}\PY{o}{.}\PY{n}{get\PYZus{}legend}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{remove}\PY{p}{(}\PY{p}{)}
+    
+\PY{c+c1}{\PYZsh{}muss man machen dass sich nicht die fits ansammeln}
+
+
+\PY{n}{ax}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{f}\PY{p}{,} \PY{n}{fit\PYZus{}func}\PY{p}{(}\PY{n}{f}\PY{p}{,} \PY{o}{*}\PY{n}{popt}\PY{p}{)}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Fit}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{fig}
+\PY{c+c1}{\PYZsh{} jens wagner nicht super effizienter Python Programmierer}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Fit Parameter:
+V=1012.122+/-0.221,
+W1=46614.034+/-21.372,
+W2=6196.180+/-20.283,
+n1=4.627+/-0.010,
+n2=9.801+/-0.016
+    \end{Verbatim}
+ 
+            
+\prompt{Out}{outcolor}{41}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{V243_files/V243_4_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \hypertarget{kommentar}{%
+\paragraph{Kommentar}\label{kommentar}}
+
+Die Bandpassfunktion
+
+\[ g(f) = \frac{V}{\sqrt{(1+1/(f/\omega_1)^{2n_1})*(1+(f/\omega_2)^{2n_2})}}\]
+
+wurde mithilfe von Scipy optimize mit diesen Parametern gefittet
+
+V=1012.122+/-0.221, W1=46614.034+/-21.372, W2=6196.180+/-20.283,
+n1=4.627+/-0.010, n2=9.801+/-0.016
+
+Die Unsicherheiten haben sich aus der Kovarianzmatrix ergeben.
+
+Es ist zu erknnen dass die Bandpassfunktion den Erwartungen von Raphael
+und Jens Wagner entspricht, da die angesetzen p0 Werte nicht stark von
+den optimalen Fit-Paramtern abweichen.
+
+Auch hier ist wieder zu erkennen, wie der Frequenzgang ohne
+Bandpassfilter einen minimalen Einfluss zeigt. Der optimale Fit weicht
+etwas von den Realwerten der Messung ab, da bei hohen Frequenzen die
+Verstärkung einen stärkeren Abfall gegenüber der Erwartung zeigt. Man
+kann vermuten, dass bei diesen Frequezen das Messgerät bereits die reale
+Verstärkung nicht mehr gang genau messen kannn.
+
+    \hypertarget{aufgabe-3-nummerische-integration}{%
+\subsection{Aufgabe 3 Nummerische
+Integration}\label{aufgabe-3-nummerische-integration}}
+
+Hier wird das Integral des Frequenzgangs bestimmt, um die
+Rauschbandbreite \(B\) zu bestimmen.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import}\PY{+w}{ }\PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{integrate}\PY{+w}{ }\PY{k}{as}\PY{+w}{ }\PY{n+nn}{integrate}
+
+\PY{n}{def\PYZus{}fit\PYZus{}func\PYZus{}squared} \PY{o}{=} \PY{k}{lambda} \PY{o}{*}\PY{n}{args}\PY{p}{:} \PY{n}{fit\PYZus{}func}\PY{p}{(}\PY{o}{*}\PY{n}{args}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{c+c1}{\PYZsh{} hat das Aura?}
+
+\PY{n}{B}\PY{o}{=}\PY{n}{integrate}\PY{o}{.}\PY{n}{quad}\PY{p}{(}\PY{n}{def\PYZus{}fit\PYZus{}func\PYZus{}squared}\PY{p}{,} \PY{n}{f}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{f}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{args}\PY{o}{=}\PY{n+nb}{tuple}\PY{p}{(}\PY{n}{popt}\PY{p}{)}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} f[len(f)] (was auch nicht geht weil Arrays ab 0 zählen: es müsste f[len(f)\PYZhy{}1] sein) ist nicht so cool wie f[\PYZhy{}1]}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Das Integral betraegt: }\PY{l+s+si}{\PYZob{}}\PY{n}{B}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{l+s+si}{:}\PY{l+s+s1}{.4e}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{ +/\PYZhy{} }\PY{l+s+si}{\PYZob{}}\PY{n}{B}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{l+s+si}{:}\PY{l+s+s1}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Das Integral betraegt: 4.7620e+10 +/- 68.1574
+    \end{Verbatim}
+
+    \hypertarget{kommentar}{%
+\paragraph{Kommentar}\label{kommentar}}
+
+Das Integral des Frequenzgangs g(f) wurde mithilfe von Scipy.integrate
+bestimmt. Die Rauschbandbreite \(B\) beträgt
+\[B=4.762 x 10^{10} \,\text{Hz}\]
+
+Die Unsicherheit des Integrals mit \(\Delta B \approx 70 \, Hz\) ist um
+Faktor 9 kleiner und somit vernachlässigbar klein.
+
+    \hypertarget{aufgabe-4-bestimmung-der-boltzmannkonstante}{%
+\subsection{Aufgabe 4 Bestimmung der
+Boltzmannkonstante}\label{aufgabe-4-bestimmung-der-boltzmannkonstante}}
+
+Die Boltzmannkonstante wird nun mithilfe der in der Einleitung bennanten
+Gleichung
+\[k_B = \frac{\langle U_{\text{aus}}^2 \rangle - \langle U_V^2 \rangle}{4 T R B} = \frac{m}{4 T B}\]
+besitmmt.
+
+m beschreibt dabei die Steigung \[ m= 4kTB \] welche aus einem linearen
+Fit mit \(f(0) = 0\) gewonnen wird
+
+    \hypertarget{fitten-der-gerade-an-an-die-rauschspannungen}{%
+\subsubsection{Fitten der Gerade an an die
+Rauschspannungen}\label{fitten-der-gerade-an-an-die-rauschspannungen}}
+
+Werte kommen aus dem Messprotokoll (Tabelle 3.2)
+
+Der Statistische Fehler muss zusätzlich noch mit dem Fehler des
+Voltmeters von 0.3\% quadraisch addiert werden:
+
+\[\Delta U_{aus} = \sqrt{(U_{aus}*0.003)^2 + \Delta U^2}\] Die Formel
+für die Differenz lautet: \[D = U_{aus}^2 - U_V^2  \]
+
+Die zugehörige Fehlerformel ist:
+
+\[\Delta D = \sqrt{(2U_{\text{aus}}\Delta U_{\text{aus}})^2 + (2U_V\Delta U_V)^2}\]
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{51}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{R} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{25}\PY{p}{,} \PY{l+m+mi}{30}\PY{p}{]}\PY{p}{)}\PY{o}{*}\PY{l+m+mf}{1e3} 
+\PY{n}{U\PYZus{}aus} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{2.4039}\PY{p}{,} \PY{l+m+mf}{3.1146}\PY{p}{,} \PY{l+m+mf}{3.6898}\PY{p}{,} \PY{l+m+mf}{4.1987}\PY{p}{,} \PY{l+m+mf}{4.6533}\PY{p}{,} \PY{l+m+mf}{5.0669}\PY{p}{]}\PY{p}{)}\PY{o}{*}\PY{l+m+mf}{1e\PYZhy{}3} \PY{c+c1}{\PYZsh{}millivolt}
+\PY{n}{fehler\PYZus{}U\PYZus{}stat} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{0.00088}\PY{p}{,} \PY{l+m+mf}{0.00124}\PY{p}{,} \PY{l+m+mf}{0.00148}\PY{p}{,} \PY{l+m+mf}{0.00167}\PY{p}{,} \PY{l+m+mf}{0.00181}\PY{p}{,} \PY{l+m+mf}{0.00178}\PY{p}{]}\PY{p}{)}\PY{o}{*}\PY{l+m+mf}{1e\PYZhy{}3} \PY{c+c1}{\PYZsh{}millivolt}
+\PY{n}{fehler\PYZus{}U\PYZus{}aus} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{p}{(}\PY{n}{fehler\PYZus{}U\PYZus{}stat}\PY{o}{*}\PY{l+m+mf}{1e\PYZhy{}3}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{p}{(}\PY{n}{U\PYZus{}aus}\PY{o}{*}\PY{l+m+mf}{0.003}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)} \PY{c+c1}{\PYZsh{}millivolt}
+
+\PY{n}{U\PYZus{}V} \PY{o}{=} \PY{l+m+mf}{1.3718}\PY{o}{*}\PY{l+m+mf}{1e\PYZhy{}3} \PY{c+c1}{\PYZsh{}Eigensrauschen}
+\PY{n}{fehler\PYZus{}U\PYZus{}V} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{p}{(}\PY{l+m+mf}{0.00048}\PY{o}{*}\PY{l+m+mf}{1e\PYZhy{}2}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{p}{(}\PY{n}{U\PYZus{}V}\PY{o}{*}\PY{l+m+mf}{0.003}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{o}{*}\PY{l+m+mf}{1e\PYZhy{}3} \PY{c+c1}{\PYZsh{}Eigensrauschen}
+
+\PY{n}{diff} \PY{o}{=} \PY{n}{U\PYZus{}aus}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{\PYZhy{}} \PY{n}{U\PYZus{}V}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}
+\PY{n}{fehler\PYZus{}diff} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{U\PYZus{}aus}\PY{o}{*}\PY{n}{fehler\PYZus{}U\PYZus{}aus}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{U\PYZus{}V}\PY{o}{*}\PY{n}{fehler\PYZus{}U\PYZus{}V}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
+
+\PY{n}{fig2}\PY{p}{,} \PY{n}{ax2} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{ax2}\PY{o}{.}\PY{n}{errorbar}\PY{p}{(}\PY{n}{R}\PY{p}{,} \PY{n}{diff}\PY{p}{,} \PY{n}{yerr}\PY{o}{=}\PY{n}{fehler\PYZus{}diff}\PY{p}{,} \PY{n}{fmt}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Messwerte}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{capsize}\PY{o}{=}\PY{l+m+mi}{3}\PY{p}{)}
+
+
+\PY{n}{linear} \PY{o}{=} \PY{k}{lambda} \PY{n}{x}\PY{p}{,} \PY{n}{m} \PY{p}{:} \PY{n}{m}\PY{o}{*}\PY{n}{x}\PY{o}{+}\PY{l+m+mi}{0}
+
+\PY{n}{popt2}\PY{p}{,} \PY{n}{pcov2} \PY{o}{=} \PY{n}{curve\PYZus{}fit}\PY{p}{(}\PY{n}{linear}\PY{p}{,} \PY{n}{R}\PY{p}{,} \PY{n}{diff}\PY{p}{,} \PY{n}{sigma}\PY{o}{=}\PY{n}{fehler\PYZus{}diff}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} Berechne die skalierten Werte für den e\PYZhy{}12 Exponenten}
+\PY{n}{m\PYZus{}scaled} \PY{o}{=} \PY{n}{popt2}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{/} \PY{l+m+mf}{1e\PYZhy{}12}
+\PY{n}{m\PYZus{}err\PYZus{}scaled} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{pcov2}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{o}{/} \PY{l+m+mf}{1e\PYZhy{}12}
+
+\PY{c+c1}{\PYZsh{} 1. Print\PYZhy{}Ausgabe anpassen}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Fit Parameter: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{m=}\PY{l+s+si}{\PYZob{}}\PY{n}{m\PYZus{}scaled}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{e\PYZhy{}12 +/\PYZhy{} }\PY{l+s+si}{\PYZob{}}\PY{n}{m\PYZus{}err\PYZus{}scaled}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{e\PYZhy{}12}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 2. Plot\PYZhy{}Beschriftung anpassen (mit sauberem KaTeX\PYZhy{}kompatiblem Text für VS Code)}
+\PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mf}{35e3}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{)}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{linear}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{o}{*}\PY{n}{popt2}\PY{p}{)}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} 
+         \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{rf}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Fit mit Steigung \PYZdl{}m=(}\PY{l+s+si}{\PYZob{}}\PY{n}{m\PYZus{}scaled}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{pm }\PY{l+s+si}{\PYZob{}}\PY{n}{m\PYZus{}err\PYZus{}scaled}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{) }\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{cdot 10\PYZca{}}\PY{l+s+se}{\PYZob{}\PYZob{}}\PY{l+s+s1}{\PYZhy{}12}\PY{l+s+se}{\PYZcb{}\PYZcb{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{ax2}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Widerstand \PYZdl{}R\PYZdl{} [Ohm]}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Quadratische Ausgangsspannung \PYZdl{}U\PYZus{}}\PY{l+s+si}{\PYZob{}aus\PYZcb{}}\PY{l+s+s1}{\PYZca{}2 \PYZhy{} U\PYZus{}V\PYZca{}2\PYZdl{} [V\PYZdl{}\PYZca{}2\PYZdl{}]}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Quadratische Ausgangsspannung gegen Widerstand (ohne Eigensrauschen)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{,} \PY{n}{which}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{both}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ls}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{ax2}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Fit Parameter:
+m=786.557e-12 +/- 2.189e-12
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{51}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<matplotlib.legend.Legend at 0x157918050>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{V243_files/V243_11_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{kommentar}{%
+\paragraph{Kommentar}\label{kommentar}}
+
+Die gefittete Gerade besitzt die Steigung
+\(m = (786.6\,\pm 2.2) \cdot 10^{-12} \,\frac{\text{V}^2}{\Omega}\).
+
+Dass sie durch den Ursprung verläuft ist beim Fit festgelegt worden
+
+    \hypertarget{dikussion-der-guxfcte-der-fits}{%
+\subsubsection{Dikussion der Güte der
+Fits:}\label{dikussion-der-guxfcte-der-fits}}
+
+Die Güte der Fits kann anhand des Chi-Quadrat-Tests getestet werden. Der
+Chi-Quadrat-Wert wird berechnet, indem die Summe der quadrierten
+Differenzen zwischen den beobachteten Werten und den durch das Modell
+vorhergesagten Werten, gewichtet durch die Varianz der Beobachtungen,
+genommen wird. Ein niedriger Chi-Quadrat-Wert im Vergleich zu den
+Freiheitsgraden deutet auf eine gute Anpassung hin, während ein hoher
+Wert auf eine schlechte Anpassung hinweist.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{53}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from}\PY{+w}{ }\PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{stats}\PY{+w}{ }\PY{k+kn}{import} \PY{n}{chi2}
+
+\PY{n}{chisquare} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{(}\PY{p}{(}\PY{n}{linear}\PY{p}{(}\PY{n}{R}\PY{p}{,} \PY{o}{*}\PY{n}{popt2}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{diff}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{/} \PY{n}{fehler\PYZus{}diff}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+\PY{n}{dof} \PY{o}{=} \PY{l+m+mi}{5} 
+\PY{n}{chi2\PYZus{}reduced} \PY{o}{=} \PY{n}{chisquare} \PY{o}{/} \PY{n}{dof}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Chi\PYZhy{}Quadrat: }\PY{l+s+si}{\PYZob{}}\PY{n}{chisquare}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{, Freiheitsgrade: }\PY{l+s+si}{\PYZob{}}\PY{n}{dof}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{, Reduziertes Chi\PYZhy{}Quadrat: }\PY{l+s+si}{\PYZob{}}\PY{n}{chi2\PYZus{}reduced}\PY{l+s+si}{:}\PY{l+s+s1}{.3f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{prob} \PY{o}{=} \PY{n+nb}{round}\PY{p}{(}\PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{chi2}\PY{o}{.}\PY{n}{cdf}\PY{p}{(}\PY{n}{chisquare}\PY{p}{,} \PY{n}{dof}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{o}{*}\PY{l+m+mi}{100}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Fitwahrscheinlichkeit = }\PY{l+s+si}{\PYZob{}}\PY{n}{prob}\PY{l+s+si}{:}\PY{l+s+s1}{.2f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Chi-Quadrat: 4.667, Freiheitsgrade: 5, Reduziertes Chi-Quadrat: 0.933
+Fitwahrscheinlichkeit = 46.00\%
+    \end{Verbatim}
+
+    \hypertarget{kommentar}{%
+\paragraph{Kommentar}\label{kommentar}}
+
+Der berechnete reduzierte Chi-Quadrat-Wert beträgt
+\(\chi^2_{\text{red}} = 0.933\) und liegt damit sehr nah am Optimalwert
+von 1. Es lässt sich darauf schlussfolgern (mit 46\%
+Wahrscheinlichkeit), dass die Abweichungen tatsächlich von statistischer
+Natur sind, und nur ein sehr kleiner systematischer Fehler vorliegt.
+
+    \hypertarget{bestimmung-der-boltzmannkonstante}{%
+\subsubsection{Bestimmung der
+Boltzmannkonstante}\label{bestimmung-der-boltzmannkonstante}}
+
+Nun wird mithilfe der Steigung des Fits die Boltzmannkonstante bestimmt.
+
+Nach Anleitung wird ein systematischer Fehle für B von 2\% angenommen.
+
+Die Raumtemperatur beträgt \(T = (22.30\,\pm 0.10)^\circ\text{C}\)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{54}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import}\PY{+w}{ }\PY{n+nn}{uncertainties}\PY{+w}{ }\PY{k}{as}\PY{+w}{ }\PY{n+nn}{unc}
+
+\PY{n}{m} \PY{o}{=} \PY{n}{unc}\PY{o}{.}\PY{n}{ufloat}\PY{p}{(}\PY{n}{popt2}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{pcov2}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\PY{n}{T} \PY{o}{=} \PY{n}{unc}\PY{o}{.}\PY{n}{ufloat}\PY{p}{(}\PY{l+m+mf}{22.3}\PY{o}{+}\PY{l+m+mf}{273.15}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{)} \PY{c+c1}{\PYZsh{} Raumtemperatur in Kelvin}
+\PY{n}{B\PYZus{}ufloat} \PY{o}{=} \PY{n}{unc}\PY{o}{.}\PY{n}{ufloat}\PY{p}{(}\PY{n}{B}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{B}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)} \PY{c+c1}{\PYZsh{} Bandbreite mit Unsicherheit statistisch}
+
+\PY{n}{k} \PY{o}{=} \PY{n}{m} \PY{o}{/} \PY{p}{(}\PY{l+m+mi}{4} \PY{o}{*} \PY{n}{T} \PY{o}{*} \PY{n}{B\PYZus{}ufloat}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Boltzmannkonstante: k\PYZus{}B = }\PY{l+s+si}{\PYZob{}}\PY{n}{k}\PY{l+s+si}{:}\PY{l+s+s1}{.3uP}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{ J/K}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{systematischer Fehler: }\PY{l+s+si}{\PYZob{}}\PY{n}{k}\PY{o}{.}\PY{n}{nominal\PYZus{}value}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{l+m+mf}{0.02}\PY{l+s+si}{:}\PY{l+s+s1}{.3e}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{ J/K}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Boltzmannkonstante: k\_B = (1.39765±0.00392)×10⁻²³ J/K
+systematischer Fehler: 2.795e-25 J/K
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{57}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from}\PY{+w}{ }\PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{constants}\PY{+w}{ }\PY{k+kn}{import} \PY{n}{Boltzmann}
+
+\PY{n}{sigma\PYZus{}dev} \PY{o}{=} \PY{p}{(}\PY{n}{k}\PY{o}{.}\PY{n}{nominal\PYZus{}value} \PY{o}{\PYZhy{}} \PY{n}{Boltzmann}\PY{p}{)}\PY{o}{/}\PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{k}\PY{o}{.}\PY{n}{std\PYZus{}dev}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{p}{(}\PY{n}{k}\PY{o}{.}\PY{n}{nominal\PYZus{}value} \PY{o}{*} \PY{l+m+mf}{0.02}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{sigma\PYZus{}dev}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{57}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+np.float64(0.6022138763082926)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{ergebnis}{%
+\subsection{Ergebnis}\label{ergebnis}}
+
+Die berechnete Boltzmannkonstante beträgt
+\[ k_B = (1.398\,\pm0.004\,\text{stat.}\,\pm 0.028\,\text{syst.}) \cdot 10^{-23} \frac{\text{J}}{\text{K}}\]
+
+Die Sigma-Abweichung berechnet sich durch
+\[ \sigma = \frac{k_B - k_{B,\text{lit}}}{\sqrt{(\Delta \text{stat})^2 + (\Delta \text{syst.})^2}} = 0.6 \Rightarrow 0.6\sigma \]
+
+Dies spricht für eine sehr gute Übereinstimmung
+
+Die getrennte Angabe von statistischem und systematischem Fehler ist
+sinnvoll, da beide unterschiedliche Ursachen haben: Der statistische
+Fehler resultiert aus den zufälligen Schwankungen des thermischen
+Rauschens sowie der Einzelmessungen an den verschiedenen Widerständen
+und lässt sich durch eine größere Anzahl an Messungen reduzieren. Der
+systematische Fehler dominiert durch die 2\% Unsicherheit der
+Rauschbandbreite. \(\Delta B\) bleibt für egal wieviele Messungen
+gleich. Damit verschiebt wird Gesamtergebnis in eine feste Richtung
+verschoben und kann nicht durch häufigeres Messen verringert werden.
+
+Es zeigt sich durch die Trennung ausserdem, dass bereits genug Messungen
+durchgeführt wurden, da der statitische Fehler um Faktor 10 kleiner als
+der systematische Fehler ist.
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+
+    
